@@ -45,7 +45,7 @@ public class Client {
         mainPanel.add(iconLabel);
         mainPanel.add(buttonPanel);
         iconLabel.setBounds(0, 0, 380, 280);
-        buttonPanel.setBounds(0, 280, 380, 1000);
+        buttonPanel.setBounds(5, 280, 380, 50);
 
         // Add panels to frame
         frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
