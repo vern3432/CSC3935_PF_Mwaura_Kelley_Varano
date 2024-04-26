@@ -1,26 +1,21 @@
 package rtspmedia.MediaClient;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.FilenameFilter;
 
 public class Client {
-
-    // GUI components
     JFrame frame;
-    JButton setupButton;
-    JButton playButton;
-    JButton pauseButton;
-    JButton tearButton;
-    JButton descButton;
-
-    JPanel mainPanel;
-    JPanel buttonPanel;
+    JButton setupButton, playButton, pauseButton, tearButton, descButton;
+    JPanel mainPanel, buttonPanel, imagePanel;
     JLabel iconLabel;
 
     public Client() {
         // Initialize frame
         frame = new JFrame("Client");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         // Initialize buttons
         setupButton = new JButton("Setup Connection");
         playButton = new JButton("Play");
@@ -38,23 +33,42 @@ public class Client {
         buttonPanel.add(setupButton);
         buttonPanel.add(playButton);
         buttonPanel.add(pauseButton);
-        buttonPanel.add(tearButton);
+        buttonPanel.add(tearButton); 
         buttonPanel.add(descButton);
 
-        mainPanel.setLayout(null);
-        mainPanel.add(iconLabel);
-        mainPanel.add(buttonPanel);
-        iconLabel.setBounds(0, 0, 380, 280);
-        buttonPanel.setBounds(5, 280, 380, 50);
+        // Load images dynamically from "SampleImages/Jpegs"
+        File dir = new File("SampleImages/Jpegs");
+        File[] files = dir.listFiles(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.toLowerCase().endsWith(".jpeg");
+            }
+        });
 
-        // Add panels to frame
-        frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
-        frame.setSize(new Dimension(390, 370));
+        if (files != null && files.length > 0) {
+            int rows = (int) Math.ceil(files.length / 5.0); // Calculate the number of rows needed
+            imagePanel = new JPanel(new GridLayout(rows, 5, 5, 5)); // Set GridLayout with rows and 5 columns
+            for (File file : files) {
+                String imagePath = file.getPath();
+                String description = file.getName();
+                ImageButton button = new ImageButton(imagePath, description);
+                imagePanel.add(button);
+            }
+            JScrollPane scrollPane = new JScrollPane(imagePanel); // Wrap imagePanel in a JScrollPane
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            mainPanel.add(scrollPane);
+        }
+
+        frame.add(mainPanel);
+        frame.pack();
         frame.setVisible(true);
     }
 
     public static void main(String[] args) {
-        // Create a new instance of Client to initialize the GUI
-        new Client();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new Client();
+            }
+        });
     }
 }
