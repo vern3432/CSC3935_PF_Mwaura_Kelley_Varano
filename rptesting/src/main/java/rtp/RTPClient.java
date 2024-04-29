@@ -48,10 +48,18 @@ public class RTPClient {
     }
 
     private void initializeAudio() throws LineUnavailableException {
-        AudioFormat format = new AudioFormat(44100.0f, 16, 2, true, false);
-        DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
+        AudioFormat format = new AudioFormat(
+            AudioFormat.Encoding.PCM_SIGNED,
+            48000.0f,
+            16,
+            2,
+            4,
+            48000.0f,
+            false
+        );
+                DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
         line = (SourceDataLine) AudioSystem.getLine(info);
-        line.open(format, 10000);
+        line.open(format, 10000); // Buffer size for playback
     }
 
     private void sendConnectionRequest() throws IOException {
@@ -71,6 +79,7 @@ public class RTPClient {
                 line.start();
                 while (isPlaying) {
                     socket.receive(packet);
+                    // Directly write the payload, assuming the first 12 bytes are the RTP header
                     line.write(packet.getData(), 12, packet.getLength() - 12);
                 }
             } catch (IOException e) {

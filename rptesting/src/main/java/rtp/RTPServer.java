@@ -57,8 +57,13 @@ public class RTPServer {
                 byte[] packetBytes = rtpPacket.getPacketBytes();
                 DatagramPacket sendPacket = new DatagramPacket(packetBytes, packetBytes.length, clientIP, clientPort);
                 socket.send(sendPacket);
+                
                 timestamp += (bufferSize / frameSize) * (1000 / (long) frameRate);
                 Thread.sleep((bufferSize / frameSize) * (1000 / (long) frameRate));
+                // Example to adjust timing based on buffer length and audio format
+                long frameDuration = (buffer.length / frameSize) * 1000 / (long) frameRate; // Duration of each frame in milliseconds
+                Thread.sleep(frameDuration); // Sleep to maintain real-time streaming
+
             }
             System.out.println("Audio streaming complete.");
         } catch (UnsupportedAudioFileException | IOException | InterruptedException e) {
