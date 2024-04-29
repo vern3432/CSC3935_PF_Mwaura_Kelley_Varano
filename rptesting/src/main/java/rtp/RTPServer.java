@@ -40,7 +40,7 @@ public class RTPServer {
 
     private void processAudioStream() {
         try {
-            File audioFile = new File("/home/linxuser3/Documents/CSC3935_PF_Mwaura_Kelley_Varano/SampleAudio/Sample.wav");
+            File audioFile = new File("/home/linxuser3/Documents/CSC3935_PF_Mwaura_Kelley_Varano/SampleAudio/Sample2.wav");
             audioStream = AudioSystem.getAudioInputStream(audioFile);
             int readBytes;
             int sequenceNumber = 0;
