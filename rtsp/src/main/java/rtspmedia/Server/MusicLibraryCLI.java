@@ -51,6 +51,8 @@ public class MusicLibraryCLI {
                 case "AddAlbum":
                     if (tokens.length > 1) {
                         addAlbum();
+                        saveLibraryToFile(library, libraryFilePath);
+
                     } else {
                         System.out.println("Error: Missing album name.");
                     }
@@ -122,7 +124,17 @@ public class MusicLibraryCLI {
 
     private static void printLibrary() {
         System.out.println("Library Contents:");
-        // Implement the logic to print the contents of the library.
+        System.out.println("Songs:");
+        for (Song song : library.getSongs()) {
+            System.out.println("Name: " + song.getName() + ", Album Image: " + song.getAlbumImage() + ", Path: " + song.getPath());
+        }
+        System.out.println("Albums:");
+        for (Album album : library.getAlbums()) {
+            System.out.println("Album:");
+            for (Song song : album.getSongs()) {
+                System.out.println("  Song: " + song.getName() + ", Album Image: " + song.getAlbumImage() + ", Path: " + song.getPath());
+            }
+        }
     }
 
     private static Library loadLibraryFromFile(String filePath) {

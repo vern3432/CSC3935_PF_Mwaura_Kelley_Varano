@@ -9,6 +9,30 @@ import merrimackutil.json.types.JSONObject;
 
 public class Song implements JSONSerializable {
     private String name;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAlbumImage() {
+        return albumImage;
+    }
+
+    public void setAlbumImage(String albumImage) {
+        this.albumImage = albumImage;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     private String albumImage; // Base64 encoded image
     private String path; // Absolute path to the song file
 
