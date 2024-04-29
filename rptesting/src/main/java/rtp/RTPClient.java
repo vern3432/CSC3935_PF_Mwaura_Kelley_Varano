@@ -21,7 +21,7 @@ public class RTPClient {
     private InetAddress serverAddress;
     private int serverPort = 25000;
     private long totalDuration = 300000; // Example total duration in milliseconds for a 5-minute audio
-    private BlockingQueue<byte[]> audioQueue = new LinkedBlockingQueue<>();
+    private long currentPlaybackTime = 0; // Tracks the current playback time in milliseconds
 
     public RTPClient() throws LineUnavailableException, SocketException, UnknownHostException {
         socket = new DatagramSocket();
@@ -91,9 +91,10 @@ public class RTPClient {
             while (isPlaying) {
                 try {
                     socket.receive(packet);
-                    audioQueue.put(Arrays.copyOfRange(packet.getData(), 12, packet.getLength())); // Store data in buffer
-                    processAudioQueue(); // Manage audio playback from queue
-                } catch (IOException | InterruptedException e) {
+                    byte[] audioData = Arrays.copyOfRange(packet.getData(), 12, packet.getLength());
+                    line.write(audioData, 0, audioData.length); // Play audio data
+                    updatePlaybackTime(audioData.length); // Update playback time and progress bar
+                } catch (IOException e) {
                     System.out.println("Error in receiving packet: " + e.getMessage());
                 }
             }
@@ -101,16 +102,15 @@ public class RTPClient {
         receiveThread.start();
     }
 
-    private void processAudioQueue() throws InterruptedException {
-        while (isPlaying && !audioQueue.isEmpty()) {
-            byte[] audioData = audioQueue.take();
-            line.write(audioData, 0, audioData.length);
-            // Optional: Update progress here based on audio playback time
-        }
+    private void updatePlaybackTime(int audioDataLength) {
+        // Calculate the duration of the audio data in milliseconds
+        double duration = (audioDataLength / (double) line.getFormat().getFrameSize()) / line.getFormat().getFrameRate() * 1000;
+        currentPlaybackTime += duration;
+        updateProgress(currentPlaybackTime);
     }
 
-    private void updateProgress(long timestamp) {
-        int progress = (int)((timestamp * 100) / totalDuration); // Calculate progress percentage
+    private void updateProgress(long playbackTime) {
+        int progress = (int)((playbackTime * 100) / totalDuration); // Calculate progress percentage
         progressBar.setValue(progress);
     }
 
