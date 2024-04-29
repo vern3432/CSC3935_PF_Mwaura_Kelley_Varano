@@ -4,9 +4,27 @@ import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JFrame;
+import rtspmedia.Server.LibraryMangement.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import merrimackutil.json.types.JSONObject;
+import merrimackutil.json.JsonIO;
 
 public class MusicLibraryCLI {
+    private static String libraryFilePath = "library.json"; // Default library file path
+    private static Library library; // Library object
+
     public static void main(String[] args) {
+        if (args.length > 0) {
+            libraryFilePath = args[0]; // Allow user to specify a different library file
+        }
+        ensureLibraryFileExists();
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
@@ -25,6 +43,7 @@ public class MusicLibraryCLI {
                 case "AddSong":
                     if (tokens.length > 1) {
                         addSong();
+                        saveLibraryToFile(library, libraryFilePath);
                     } else {
                         System.out.println("Error: Missing song name.");
                     }
@@ -55,19 +74,29 @@ public class MusicLibraryCLI {
     public static void addSong() {
         JFrame frame = new JFrame();
         JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("MP3 Files", "mp3");
-        fileChooser.setFileFilter(filter);
+        FileNameExtensionFilter songFilter = new FileNameExtensionFilter("MP3 Files", "mp3");
+        fileChooser.setFileFilter(songFilter);
         fileChooser.setDialogTitle("Select an MP3 file");
 
-        int result = fileChooser.showOpenDialog(frame);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
-            System.out.println("Selected song: " + selectedFilePath);
-            // Implement further actions with the selected file path here if needed.
+        int songResult = fileChooser.showOpenDialog(frame);
+        if (songResult == JFileChooser.APPROVE_OPTION) {
+            String songPath = fileChooser.getSelectedFile().getAbsolutePath();
+            fileChooser.setDialogTitle("Select an Image for the Album");
+            fileChooser.setFileFilter(new FileNameExtensionFilter("Image Files", "jpg", "png"));
+
+            int imageResult = fileChooser.showOpenDialog(frame);
+            if (imageResult == JFileChooser.APPROVE_OPTION) {
+                String imagePath = fileChooser.getSelectedFile().getAbsolutePath();
+                // Add song to library and save to file
+                library.addSong(new Song("Song Name", imagePath, songPath));
+                saveLibraryToFile(library, libraryFilePath);
+            } else {
+                System.out.println("No image selected or operation cancelled.");
+            }
         } else {
-            System.out.println("No file selected or operation cancelled.");
+            System.out.println("No song file selected or operation cancelled.");
         }
-        frame.dispose(); // Clean up the frame after use.
+        frame.dispose();
     }
 
     private static void addAlbum() {
@@ -96,4 +125,50 @@ public class MusicLibraryCLI {
         // Implement the logic to print the contents of the library.
     }
 
+    private static Library loadLibraryFromFile(String filePath) {
+        return null;
+        // Implement loading logic
+    }
+
+    private static void saveLibraryToFile(Library library, String filePath) {
+        try {
+            FileWriter writer = new FileWriter(filePath, false); // false to overwrite the file
+            String libraryJson = library.serialize(); // Serialize the library to JSON
+            writer.write(libraryJson);
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving the library file: " + e.getMessage());
+        }
+    }
+
+    private static void ensureLibraryFileExists() {
+        File libraryFile = new File(libraryFilePath);
+        if (!libraryFile.exists()) {
+            try {
+                libraryFile.createNewFile();
+                FileWriter writer = new FileWriter(libraryFile);
+                writer.write("{\"songs\":[],\"albums\":[]}");
+                writer.close();
+                library = new Library(); // Initialize a new empty Library
+            } catch (IOException e) {
+                System.out.println("Error creating or initializing the library file: " + e.getMessage());
+            }
+        } else {
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(libraryFile));
+                StringBuilder jsonBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonBuilder.append(line);
+                }
+                reader.close();
+                String jsonString = jsonBuilder.toString();
+                library = new Library();
+                library.deserialize(JsonIO.readObject(jsonString));
+            } catch (Exception e) {
+                System.out.println("Error loading the library file: " + e.getMessage());
+                library = new Library(); // Initialize a new empty Library if there's an error loading
+            }
+        }
+    }
 }
