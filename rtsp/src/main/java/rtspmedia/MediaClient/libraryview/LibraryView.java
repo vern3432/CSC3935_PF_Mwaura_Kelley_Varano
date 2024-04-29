@@ -7,13 +7,16 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-public class Library {
+import java.util.Base64;
+import rtspmedia.Server.LibraryMangement.Library; 
+import rtspmedia.Server.LibraryMangement.Song;
+public class LibraryView {
     JFrame frame;
     JButton setupButton, playButton, pauseButton, tearButton, descButton;
     JPanel mainPanel, buttonPanel, imagePanel;
     JLabel iconLabel;
 
-    public Library() {
+    public LibraryView() {
         // Initialize frame
         frame = new JFrame("Client");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -98,10 +101,32 @@ public class Library {
         frame.setVisible(true);
     }
 
+    public LibraryView(rtspmedia.Server.LibraryMangement.Library libraryData) {
+        this(); // Call the default constructor to set up the frame and panels
+        populateLibrary(libraryData);
+    }
+
+    private void populateLibrary(rtspmedia.Server.LibraryMangement.Library libraryData) {
+        for (Song song : libraryData.getSongs()) {
+            ImageIcon icon = new ImageIcon(Base64.getDecoder().decode(song.getAlbumImage()));
+            Image img = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            JButton button = new JButton(new ImageIcon(img));
+            button.setActionCommand(song.getName());
+            button.setToolTipText(song.getName());
+            button.addActionListener(e -> {
+                // Action to play the song or display song details
+                System.out.println("Playing song: " + e.getActionCommand());
+            });
+            mainPanel.add(button);
+        }
+        frame.validate();
+        frame.repaint();
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new Library();
+                new LibraryView();
             }
         });
     }
