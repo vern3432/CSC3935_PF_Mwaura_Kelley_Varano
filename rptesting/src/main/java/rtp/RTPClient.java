@@ -4,6 +4,10 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
+import java.util.Arrays;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import javax.swing.*;
 import javax.sound.sampled.*;
 
@@ -47,21 +51,41 @@ public class RTPClient {
         frame.setVisible(true);
     }
 
+    private BlockingQueue<byte[]> playbackQueue; // Buffer queue to store incoming audio data
+
     private void initializeAudio() throws LineUnavailableException {
-        AudioFormat format = new AudioFormat(
-            AudioFormat.Encoding.PCM_SIGNED,
-            48000.0f,
-            16,
-            2,
-            4,
-            48000.0f,
-            false
-        );
-                DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
+        AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 48000.0f, 16, 2, 4, 48000.0f, false);
+        DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
         line = (SourceDataLine) AudioSystem.getLine(info);
         line.open(format, 10000); // Buffer size for playback
+        playbackQueue = new LinkedBlockingQueue<>(50); // Initialize the buffer with capacity
     }
-
+    
+    private void startReceiving() {
+        receiveThread = new Thread(() -> {
+            try {
+                byte[] buf = new byte[4096];
+                DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                line.start();
+                while (isPlaying) {
+                    socket.receive(packet);
+                    // Add received data to the buffer queue instead of playing directly
+                    playbackQueue.offer(Arrays.copyOfRange(packet.getData(), 12, packet.getLength()));
+                    // Process buffer to line if buffer has sufficient data
+                    if (playbackQueue.size() >= 10) {
+                        byte[] audioData = playbackQueue.poll();
+                        if (audioData != null) {
+                            line.write(audioData, 0, audioData.length);
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println("Error in receiving packet: " + e.getMessage());
+            }
+        });
+        receiveThread.start();
+    }
+    
     private void sendConnectionRequest() throws IOException {
         byte[] message = "Hello, Server!".getBytes();
         DatagramPacket packet = new DatagramPacket(message, message.length, serverAddress, serverPort);
@@ -71,23 +95,6 @@ public class RTPClient {
         }
     }
 
-    private void startReceiving() {
-        receiveThread = new Thread(() -> {
-            try {
-                byte[] buf = new byte[4096];
-                DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                line.start();
-                while (isPlaying) {
-                    socket.receive(packet);
-                    // Directly write the payload, assuming the first 12 bytes are the RTP header
-                    line.write(packet.getData(), 12, packet.getLength() - 12);
-                }
-            } catch (IOException e) {
-                System.out.println("Error in receiving packet: " + e.getMessage());
-            }
-        });
-        receiveThread.start();
-    }
 
     private void stop() {
         isPlaying = false;
