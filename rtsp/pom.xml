@@ -12,5 +12,16 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
+        <!-- Define dependencies -->
+        <dependencies>
+
+            <dependency>
+              <groupId>com.example</groupId> <!-- Update this with the actual groupId of merrimackutil.jar -->
+              <artifactId>merrimackutil</artifactId> <!-- Update this with the actual artifactId of merrimackutil.jar -->
+              <version>1.0</version> <!-- Update this with the actual version of merrimackutil.jar -->
+              <scope>system</scope>
+              <systemPath>${project.basedir}/lib/merrimackutil.jar</systemPath>
+            </dependency>
+          </dependencies>
 
 </project>
