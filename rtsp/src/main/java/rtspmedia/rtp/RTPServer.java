@@ -6,6 +6,7 @@ import javax.sound.sampled.*;
 
 public class RTPServer {
     public static final int RTP_PORT = 25000;
+    private static RTPServer instance;
     private DatagramSocket socket;
     private InetAddress clientIP;
     private int clientPort;
@@ -13,7 +14,25 @@ public class RTPServer {
     private byte[] buffer = new byte[4096];
     File audioFile;
 
-    
+    public RTPServer() throws SocketException {
+        if (this.socket == null || this.socket.isClosed()) {
+            this.socket = new DatagramSocket(RTP_PORT); // Use a fixed port
+        }
+        System.out.println("RTP Server is running on port: " + socket.getLocalPort());
+        audioFile = new File("SampleAudio/YoullFindaWay.wav");
+    }
+
+    public static RTPServer getInstance() {
+        if (instance == null) {
+            try {
+                instance = new RTPServer();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
+        return instance;
+    }
+
     /** 
      * @return File
      */
@@ -23,13 +42,6 @@ public class RTPServer {
 
     public void setAudioFile(File audioFile) {
         this.audioFile = audioFile;
-    }
-
-    public RTPServer() throws SocketException {
-        this.socket = new DatagramSocket(0); // 0 lets the system pick an available port
-        System.out.println("RTP Server is running on port: " + socket.getLocalPort());
-        audioFile = new File("SampleAudio/YoullFindaWay.wav");
-
     }
 
     public void start() {
@@ -58,7 +70,7 @@ public class RTPServer {
                 ByteArrayInputStream byteStream = new ByteArrayInputStream(packet.getData());
                 ObjectInputStream input = new ObjectInputStream(byteStream);
                 String songPath = (String) input.readObject();
-                RTPServer rtpServer = new RTPServer();
+                RTPServer rtpServer = RTPServer.getInstance();
                 System.out.println("Playing song: " + songPath);
                 rtpServer.setAudioFile(new File(songPath));
                 rtpServer.start();
@@ -113,9 +125,9 @@ public class RTPServer {
 
     public static void main(String[] args) {
         try {
-            RTPServer server = new RTPServer();
+            RTPServer server = RTPServer.getInstance();
             server.start();
-        } catch (SocketException e) {
+        } catch (Exception e) {
             System.out.println("Failed to start the server: " + e.getMessage());
         }
     }
