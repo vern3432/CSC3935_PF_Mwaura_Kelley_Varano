@@ -8,10 +8,13 @@ import java.io.FilenameFilter;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.Base64;
+
+import rtspmedia.MediaClient.libraryview.libraryviewhelpers.ImageButton;
 import rtspmedia.Server.LibraryMangement.Library; 
 import rtspmedia.Server.LibraryMangement.Song;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Base64;
 
@@ -151,8 +154,13 @@ public class LibraryView extends JFrame {
     public static void createAndShowLibraryViewWithDummyData() {
         Library dummyLibrary = new Library();
         try {
-            File imgFile = new File("/home/linxuser3/Documents/CSC3935_PF_Mwaura_Kelley_Varano/rtsp/src/main/java/rtspmedia/Server/resources/placeholder.jpg");
-            String base64Image = Base64.getEncoder().encodeToString(Files.readAllBytes(imgFile.toPath()));
+            // Accessing the placeholder image via ClassLoader
+            InputStream is = LibraryView.class.getResourceAsStream("/images/placeholder.jpg");
+            if (is == null) {
+                throw new RuntimeException("Cannot find resource file");
+            }
+            byte[] imageBytes = is.readAllBytes();
+            String base64Image = Base64.getEncoder().encodeToString(imageBytes);
 
             // Create dummy songs
             Song song1 = new Song("Song 1", base64Image, "path/to/song1.mp3");

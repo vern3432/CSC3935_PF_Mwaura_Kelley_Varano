@@ -1,4 +1,4 @@
-package rtspmedia.MediaClient.libraryview;
+package rtspmedia.MediaClient.libraryview.libraryviewhelpers;
 
 import java.awt.Color;
 import javax.swing.*;

@@ -1,24 +1,23 @@
 package rtspmedia.Server;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
-
 import java.util.Base64;
 import java.util.Scanner;
+
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import rtspmedia.Server.LibraryMangement.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import merrimackutil.json.types.JSONObject;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import merrimackutil.json.JsonIO;
 import rtspmedia.MediaClient.libraryview.LibraryView;
+import rtspmedia.Server.LibraryMangement.Album;
+import rtspmedia.Server.LibraryMangement.Library;
+import rtspmedia.Server.LibraryMangement.Song;
 
 public class MusicLibraryCLI {
     private static String libraryFilePath = "library.json"; // Default library file path

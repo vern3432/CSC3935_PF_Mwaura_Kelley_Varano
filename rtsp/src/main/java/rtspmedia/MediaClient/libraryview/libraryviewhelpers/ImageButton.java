@@ -1,4 +1,4 @@
-package rtspmedia.MediaClient.libraryview;
+package rtspmedia.MediaClient.libraryview.libraryviewhelpers;
 
 import javax.swing.*;
 import java.awt.*;
