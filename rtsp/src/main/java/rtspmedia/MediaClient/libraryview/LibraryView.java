@@ -128,7 +128,6 @@ public class LibraryView {
                 ImageButton songButton = new ImageButton(new ImageIcon(img),song.getName());
                 songButton.setHorizontalTextPosition(JButton.CENTER);
                 songButton.setVerticalTextPosition(JButton.BOTTOM);
-                songButton.addActionListener(e -> System.out.println("Playing song: " + song.getName()));
                 imagePanel.add(songButton);
             } catch (Exception e) {
                 e.printStackTrace();

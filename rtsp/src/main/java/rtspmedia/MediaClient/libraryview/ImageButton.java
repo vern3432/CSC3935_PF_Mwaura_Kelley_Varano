@@ -27,7 +27,8 @@ public class ImageButton extends JButton implements ActionListener {
         this.setFocusPainted(false);
     }
     public ImageButton(ImageIcon image, String buttonText) {
-        
+        this.buttonText = buttonText;
+
         ImageIcon icon = image;
         Image img = icon.getImage();
         Image resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize image to 100x100 pixels
