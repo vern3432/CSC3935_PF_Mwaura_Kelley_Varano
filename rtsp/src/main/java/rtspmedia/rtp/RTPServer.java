@@ -26,15 +26,21 @@ public class RTPServer {
     }
 
     public RTPServer() throws SocketException {
-        this.socket = new DatagramSocket(RTP_PORT);
+        this.socket = new DatagramSocket(0); // 0 lets the system pick an available port
+        System.out.println("RTP Server is running on port: " + socket.getLocalPort());
         audioFile = new File("SampleAudio/YoullFindaWay.wav");
 
     }
 
     public void start() {
+
         System.out.println("Server is running and waiting for connection...");
         receiveClientConnection();
         processAudioStream();
+    }
+    public int getSocket(){
+        System.out.println("Getting Socket:"+socket.getLocalPort());
+        return socket.getLocalPort();
     }
 
     private void receiveClientConnection() {
@@ -47,8 +53,19 @@ public class RTPServer {
                 clientIP = packet.getAddress();
                 clientPort = packet.getPort();
                 System.out.println("Client connected: " + clientIP + ":" + clientPort);
+
+                // Listen for song path
+                ByteArrayInputStream byteStream = new ByteArrayInputStream(packet.getData());
+                ObjectInputStream input = new ObjectInputStream(byteStream);
+                String songPath = (String) input.readObject();
+                RTPServer rtpServer = new RTPServer();
+                System.out.println("Playing song: " + songPath);
+                rtpServer.setAudioFile(new File(songPath));
+                rtpServer.start();
+
+                
             }
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

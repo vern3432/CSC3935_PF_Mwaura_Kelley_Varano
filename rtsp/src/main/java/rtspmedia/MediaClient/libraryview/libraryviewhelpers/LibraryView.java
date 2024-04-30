@@ -1,5 +1,6 @@
 package rtspmedia.MediaClient.libraryview.libraryviewhelpers;
 
+import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 
 import java.awt.*;
@@ -11,11 +12,16 @@ import java.util.Base64;
 
 import rtspmedia.Server.LibraryMangement.Library; 
 import rtspmedia.Server.LibraryMangement.Song;
+import rtspmedia.rtp.RTPClient;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.net.Socket;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
 
 public class LibraryView extends JFrame {
     JFrame frame;
@@ -64,6 +70,33 @@ public class LibraryView extends JFrame {
                 String imagePath = file.getPath();
                 String description = file.getName();
                 ImageButton button = new ImageButton(imagePath, description);
+                button.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        try (Socket socket = new Socket("localhost", 12345);
+                             ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+                             ObjectInputStream input = new ObjectInputStream(socket.getInputStream())) {
+                            output.writeObject(imagePath);
+                            output.flush();
+
+                            // Receive RTP port number from server
+                            Object receivedObject = input.readObject();
+                            if (receivedObject instanceof Integer) {
+                                int rtpPort = (Integer) receivedObject;
+                                System.out.println("Received RTP port: " + rtpPort);
+                                RTPClient rtpClient = new RTPClient("localhost", rtpPort);
+                                rtpClient.startReceiving();
+                            } else {
+                                System.out.println("Received non-integer RTP port: " + receivedObject);
+                            }
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        } catch (LineUnavailableException e1) {
+                            e1.printStackTrace();
+                        } catch (ClassNotFoundException e2) {
+                            e2.printStackTrace();
+                        }
+                    }
+                });
                 imagePanel.add(button);
             }
             JScrollPane scrollPane = new JScrollPane(imagePanel); // Wrap imagePanel in a JScrollPane
@@ -156,6 +189,31 @@ public class LibraryView extends JFrame {
                 ImageButton songButton = new ImageButton(new ImageIcon(img),song.getName(),song.getPath());
                 songButton.setHorizontalTextPosition(JButton.CENTER);
                 songButton.setVerticalTextPosition(JButton.BOTTOM);
+                songButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        try (Socket socket = new Socket("localhost", 12345);
+                             ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+                             ObjectInputStream input = new ObjectInputStream(socket.getInputStream())) {
+                            output.writeObject(song.getPath());
+                            output.flush();
+                            Object receivedObject = input.readObject();
+                            if (receivedObject instanceof Integer) {
+                                int rtpPort = (Integer) receivedObject;
+                                System.out.println("Received RTP port: " + rtpPort);
+                                RTPClient rtpClient = new RTPClient("localhost", rtpPort);
+                                rtpClient.startReceiving();
+                            } else {
+                                System.out.println("Received non-integer RTP port: " + receivedObject);
+                            }
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        } catch (LineUnavailableException e1) {
+                            e1.printStackTrace();
+                        } catch (ClassNotFoundException e2) {
+                            e2.printStackTrace();
+                        }
+                    }
+                });
                 imagePanel.add(songButton);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -19,10 +19,17 @@ public class RTPClient {
     private DatagramSocket socket;
     private Thread receiveThread;
     private InetAddress serverAddress;
-    private int serverPort = 25000;
+    private int serverPort; // Changed to not initialize here
     private long totalDuration = 300000; // Example total duration in milliseconds for a 5-minute audio
     private long currentPlaybackTime = 0; // Tracks the current playback time in milliseconds
 
+    public RTPClient(String serverAddress, int serverPort) throws LineUnavailableException, SocketException, UnknownHostException { // Constructor parameters changed
+        this.serverAddress = InetAddress.getByName(serverAddress);
+        this.serverPort = serverPort;
+        socket = new DatagramSocket();
+        initializeAudio();
+        initializeGUI();
+    }
     public RTPClient() throws LineUnavailableException, SocketException, UnknownHostException {
         socket = new DatagramSocket();
         serverAddress = InetAddress.getByName("localhost");
@@ -87,7 +94,7 @@ public class RTPClient {
         }
     }
 
-    private void startReceiving() {
+    public void startReceiving() {
         receiveThread = new Thread(() -> {
             byte[] buf = new byte[4096];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -130,7 +137,7 @@ public class RTPClient {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
-                new RTPClient();
+                new RTPClient("localhost", 25000); // Example usage with default port
             } catch (Exception e) {
                 e.printStackTrace();
             }

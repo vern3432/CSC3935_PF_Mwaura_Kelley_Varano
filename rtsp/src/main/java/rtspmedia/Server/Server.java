@@ -5,6 +5,8 @@ import java.net.Socket;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 import rtspmedia.Server.LibraryMangement.*;
+import rtspmedia.rtp.RTPServer;
+
 import java.net.Socket;
 import java.io.ObjectInputStream;
 import java.io.IOException;
@@ -53,16 +55,12 @@ public class Server {
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server is listening on port " + PORT);
-            int connectionCount = 0;
-
-            while (connectionCount < MAX_CONNECTIONS) { // Limit the number of concurrent connections
+            while (true) { // Keep server running
                 Socket socket = serverSocket.accept();
                 new Thread(new ClientHandler(socket)).start();
-                connectionCount++;
             }
-        } catch (IOException e) {                       
+        } catch (IOException e) {
             System.out.println("Server exception: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -74,11 +72,24 @@ public class Server {
         }
 
         public void run() {
-            try (ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream())) {
+            try (ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+                 ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream())) {
                 ensureLibraryFileExists();
                 output.writeObject(Server.library.serialize());
                 output.flush();
-            } catch (IOException e) {
+
+                // Listen for song path
+                String songPath = (String) input.readObject();
+                RTPServer rtpServer = new RTPServer();
+                rtpServer.setAudioFile(new File(songPath));
+                // After starting the RTPServer
+                Integer rtpPort = rtpServer.getSocket(); // Retrieve the port
+                System.out.println("Sending RTP port: " + rtpPort); // Debugging: Check the port being sent
+                output.writeObject(rtpPort); // Send the port as an Integer
+                output.flush();
+                rtpServer.start();
+
+            } catch (IOException | ClassNotFoundException e) {
                 System.out.println("Error handling client: " + e.getMessage());
             }
         }
@@ -107,11 +118,10 @@ public class Server {
                 reader.close();
                 String jsonString = jsonBuilder.toString();
                 Server.library = new Library();
-                System.out.println(jsonString);
                 Server.library.deserialize(JsonIO.readObject(jsonString));
             } catch (Exception e) {
                 System.out.println("Error loading the library file: " + e.getMessage());
-                Server.library = new Library(); // Initialize a new empty Library if there's an error loading
+                Server.library =  new Library(); // Initialize a new empty Library if there's an error loading
             }
         }
     }
