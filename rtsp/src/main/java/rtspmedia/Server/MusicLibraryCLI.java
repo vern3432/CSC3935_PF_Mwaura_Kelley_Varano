@@ -1,5 +1,7 @@
 package rtspmedia.Server;
+import java.nio.file.Files;
 
+import java.util.Base64;
 import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -20,7 +22,7 @@ public class MusicLibraryCLI {
     private static String libraryFilePath = "library.json"; // Default library file path
     private static Library library; // Library object
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if (args.length > 0) {
             libraryFilePath = args[0]; // Allow user to specify a different library file
         }
@@ -73,7 +75,7 @@ public class MusicLibraryCLI {
         scanner.close();
         System.out.println("Exiting Music Library CLI.");
     }
-    public static void addSong() {
+    public static void addSong() throws IOException {
         JFrame frame = new JFrame();
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter songFilter = new FileNameExtensionFilter("MP3 Files", "mp3");
@@ -90,7 +92,9 @@ public class MusicLibraryCLI {
             if (imageResult == JFileChooser.APPROVE_OPTION) {
                 String imagePath = fileChooser.getSelectedFile().getAbsolutePath();
                 // Add song to library and save to file
-                library.addSong(new Song("Song Name", imagePath, songPath));
+                File imgFile = new File(imagePath);
+                String base64Image = Base64.getEncoder().encodeToString(Files.readAllBytes(imgFile.toPath()));
+                library.addSong(new Song("Song Name", base64Image, songPath));
                 saveLibraryToFile(library, libraryFilePath);
             } else {
                 System.out.println("No image selected or operation cancelled.");
