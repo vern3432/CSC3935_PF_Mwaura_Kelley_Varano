@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import merrimackutil.json.JsonIO;
-import rtspmedia.MediaClient.libraryview.LibraryView;
+import rtspmedia.MediaClient.libraryview.libraryviewhelpers.LibraryView;
 import rtspmedia.Server.LibraryMangement.Album;
 import rtspmedia.Server.LibraryMangement.Library;
 import rtspmedia.Server.LibraryMangement.Song;

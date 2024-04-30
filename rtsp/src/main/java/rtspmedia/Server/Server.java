@@ -27,6 +27,7 @@ import java.io.FileReader;
 public class Server {
     private static final int PORT = 12345;
     private static final int MAX_CONNECTIONS = 20; // Maximum number of concurrent connections
+    
     private static String libraryFilePath = "library.json"; // Default library file path
     private static  Library library;
     Server(String libraryFilePath){

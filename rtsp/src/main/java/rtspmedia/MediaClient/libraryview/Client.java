@@ -1,4 +1,5 @@
 package rtspmedia.MediaClient.libraryview;
+import rtspmedia.MediaClient.libraryview.libraryviewhelpers.LibraryView;
 import rtspmedia.Server.LibraryMangement.*;
 import java.net.Socket;
 import java.io.ObjectInputStream;
@@ -21,7 +22,7 @@ public class Client  {
     
     /** 
      * @param args
-     */
+    /home/linxuser3/Documents/CSC3935_PF_Mwaura_Kelley_Varano/SampleAudio/Behind Enemy Lines.mp3 */
     public static void main(String[] args) {
         try (Socket socket = new Socket(HOST, PORT);
              ObjectInputStream input = new ObjectInputStream(socket.getInputStream())) {

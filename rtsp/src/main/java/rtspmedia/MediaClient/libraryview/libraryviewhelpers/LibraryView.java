@@ -1,4 +1,4 @@
-package rtspmedia.MediaClient.libraryview;
+package rtspmedia.MediaClient.libraryview.libraryviewhelpers;
 
 import javax.swing.*;
 
@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.Base64;
 
-import rtspmedia.MediaClient.libraryview.libraryviewhelpers.ImageButton;
 import rtspmedia.Server.LibraryMangement.Library; 
 import rtspmedia.Server.LibraryMangement.Song;
 import java.io.File;
