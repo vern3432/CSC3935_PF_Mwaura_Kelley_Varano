@@ -63,9 +63,13 @@ public class MusicLibraryCLI {
                     }
                     break;
                 case "StartServer":
+                    ensureLibraryFileExists();
+
                     StartServer();
                     break;
                 case "ViewLibrary":
+                ensureLibraryFileExists();
+
                     ViewLibrary();
                     break;
                 case "PrintLibrary":
@@ -135,6 +139,7 @@ public class MusicLibraryCLI {
     }
 
     public static void StartServer() {
+        Server server=new Server(MusicLibraryCLI.libraryFilePath);
 
         
     }
