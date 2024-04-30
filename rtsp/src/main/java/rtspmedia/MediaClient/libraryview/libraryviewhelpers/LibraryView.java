@@ -1,5 +1,6 @@
 package rtspmedia.MediaClient.libraryview.libraryviewhelpers;
 
+import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 
 import java.awt.*;
@@ -9,11 +10,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.Base64;
 
-import rtspmedia.Server.LibraryMangement.Library; 
+import rtspmedia.Server.LibraryMangement.Library;
 import rtspmedia.Server.LibraryMangement.Song;
+import rtspmedia.rtp.RTPClient;
+import rtspmedia.rtp.RTPServer;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.util.Base64;
 
@@ -46,7 +52,7 @@ public class LibraryView extends JFrame {
         buttonPanel.add(setupButton);
         buttonPanel.add(playButton);
         buttonPanel.add(pauseButton);
-        buttonPanel.add(tearButton); 
+        buttonPanel.add(tearButton);
         buttonPanel.add(descButton);
 
         // Load images dynamically from "SampleImages/Jpegs"
@@ -108,6 +114,7 @@ public class LibraryView extends JFrame {
         frame.pack();
         frame.setVisible(true);
     }
+
     public LibraryView(Library library) {
         // Initialize frame
         frame = new JFrame("Client Library");
@@ -145,17 +152,42 @@ public class LibraryView extends JFrame {
             }
         });
 
-
-
         // Load and display songs from the library
         library.getSongs().forEach(song -> {
             try {
                 byte[] imageData = Base64.getDecoder().decode(song.getAlbumImage());
                 ImageIcon icon = new ImageIcon(imageData);
                 Image img = icon.getImage().getScaledInstance(2000, 2000, Image.SCALE_SMOOTH);
-                ImageButton songButton = new ImageButton(new ImageIcon(img),song.getName(),song.getPath());
+                ImageButton songButton = new ImageButton(new ImageIcon(img), song.getName(), song.getPath());
                 songButton.setHorizontalTextPosition(JButton.CENTER);
                 songButton.setVerticalTextPosition(JButton.BOTTOM);
+
+                songButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        Thread serverThread = new Thread(() -> {
+                            RTPServer rtpServer;
+                            try {
+                                rtpServer = new RTPServer(song.getPath());
+                                rtpServer.start();
+                            } catch (SocketException e1) {
+                                // TODO Auto-generated catch block
+                                e1.printStackTrace();
+                            }
+                        });
+
+                        serverThread.start();
+
+                        try {
+                            RTPClient client = new RTPClient();
+                        } catch (SocketException | UnknownHostException | LineUnavailableException e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        }
+
+                    }
+                });
+
                 imagePanel.add(songButton);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -203,8 +235,7 @@ public class LibraryView extends JFrame {
         }
     }
 
-    
-    /** 
+    /**
      * @param args
      */
     public static void main(String[] args) {
