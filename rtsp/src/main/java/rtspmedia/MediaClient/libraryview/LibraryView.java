@@ -123,13 +123,37 @@ public class LibraryView extends JFrame {
         mainPanel.setBackground(Color.BLACK);
         buttonPanel.setBackground(Color.BLACK);
         imagePanel.setBackground(Color.BLACK);
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Options");
+        JMenuItem toggleTheme = new JMenuItem("Toggle Theme");
+        menu.add(toggleTheme);
+        menuBar.add(menu);
+        frame.setJMenuBar(menuBar);
+        toggleTheme.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (mainPanel.getBackground().equals(Color.BLACK)) {
+                    mainPanel.setBackground(Color.WHITE);
+                    buttonPanel.setBackground(Color.WHITE);
+                    imagePanel.setBackground(Color.WHITE);
+                    frame.getContentPane().setBackground(Color.WHITE);
+                } else {
+                    mainPanel.setBackground(Color.BLACK);
+                    buttonPanel.setBackground(Color.BLACK);
+                    imagePanel.setBackground(Color.BLACK);
+                    frame.getContentPane().setBackground(Color.BLACK);
+                }
+            }
+        });
+
+
 
         // Load and display songs from the library
         library.getSongs().forEach(song -> {
             try {
                 byte[] imageData = Base64.getDecoder().decode(song.getAlbumImage());
                 ImageIcon icon = new ImageIcon(imageData);
-                Image img = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                Image img = icon.getImage().getScaledInstance(2000, 2000, Image.SCALE_SMOOTH);
                 ImageButton songButton = new ImageButton(new ImageIcon(img),song.getName());
                 songButton.setHorizontalTextPosition(JButton.CENTER);
                 songButton.setVerticalTextPosition(JButton.BOTTOM);
