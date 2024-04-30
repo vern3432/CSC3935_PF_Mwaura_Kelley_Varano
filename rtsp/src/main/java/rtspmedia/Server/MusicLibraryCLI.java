@@ -6,6 +6,7 @@ import java.util.Scanner;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import rtspmedia.Server.LibraryMangement.*;
 import java.io.File;
 import java.io.FileWriter;
@@ -17,6 +18,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import merrimackutil.json.types.JSONObject;
 import merrimackutil.json.JsonIO;
+import rtspmedia.MediaClient.libraryview.LibraryView;
 
 public class MusicLibraryCLI {
     private static String libraryFilePath = "library.json"; // Default library file path
@@ -36,7 +38,9 @@ public class MusicLibraryCLI {
             System.out.println("2. AddAlbum <album_name>");
             System.out.println("3. PrintLibrary");
             System.out.println("4. StartServer");
-            System.out.println("5. Exit");
+            System.out.println("5. ViewLibrary");
+
+            System.out.println("6. Exit");
             System.out.print("Enter command: ");
             String command = scanner.nextLine();
             String[] tokens = command.split(" ", 2);
@@ -61,6 +65,9 @@ public class MusicLibraryCLI {
                     break;
                 case "StartServer":
                     StartServer();
+                    break;
+                case "ViewLibrary":
+                    ViewLibrary();
                     break;
                 case "PrintLibrary":
                     printLibrary();
@@ -122,8 +129,15 @@ public class MusicLibraryCLI {
         frame.dispose(); // Clean up the frame after use.
     }
 
+    public static void ViewLibrary() {
+        SwingUtilities.invokeLater(() -> {
+            new LibraryView(library);
+        });
+    }
+
     public static void StartServer() {
 
+        
     }
 
     private static void printLibrary() {

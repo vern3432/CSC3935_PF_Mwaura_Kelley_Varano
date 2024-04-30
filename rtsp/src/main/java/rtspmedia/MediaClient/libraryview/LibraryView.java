@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 
-public class LibraryView {
+public class LibraryView extends JFrame {
     JFrame frame;
     JButton setupButton, playButton, pauseButton, tearButton, descButton;
     JPanel mainPanel, buttonPanel, imagePanel;
@@ -25,6 +25,7 @@ public class LibraryView {
         // Initialize frame
         frame = new JFrame("Client");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600); // Set the size of the frame
 
         // Initialize buttons
         setupButton = new JButton("Setup Connection");
@@ -110,6 +111,7 @@ public class LibraryView {
         frame = new JFrame("Client Library");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.BLACK);
+        frame.setSize(800, 600); // Set the size of the frame
 
         // Initialize panels
         mainPanel = new JPanel(new BorderLayout());
