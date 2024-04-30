@@ -111,7 +111,7 @@ public class RTPClient {
 
     private void updateProgress(long playbackTime) {
         int progress = (int)((playbackTime * 100) / totalDuration); // Calculate progress percentage
-        progressBar.setValue(progress);
+        progressBar.setValue(progress*2);
     }
 
     private void stop() {
