@@ -8,11 +8,12 @@ import java.awt.event.ActionListener;
 public class ImageButton extends JButton implements ActionListener {
     private String imagePath;
     private String buttonText;
+    private String fileLocation;
 
     public ImageButton(String imagePath, String buttonText) {
         this.imagePath = imagePath;
         this.buttonText = buttonText;
-        
+        this.fileLocation=fileLocation;
         ImageIcon icon = new ImageIcon(imagePath);
         Image img = icon.getImage();
         Image resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize image to 100x100 pixels
@@ -26,9 +27,10 @@ public class ImageButton extends JButton implements ActionListener {
         this.setBorderPainted(false);
         this.setFocusPainted(false);
     }
-    public ImageButton(ImageIcon image, String buttonText) {
+    public ImageButton(ImageIcon image, String buttonText,String fileLocation) {
         this.buttonText = buttonText;
-
+        this.fileLocation=fileLocation;
+        System.out.println(fileLocation);
         ImageIcon icon = image;
         Image img = icon.getImage();
         Image resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize image to 100x100 pixels

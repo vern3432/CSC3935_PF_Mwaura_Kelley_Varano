@@ -154,7 +154,7 @@ public class LibraryView extends JFrame {
                 byte[] imageData = Base64.getDecoder().decode(song.getAlbumImage());
                 ImageIcon icon = new ImageIcon(imageData);
                 Image img = icon.getImage().getScaledInstance(2000, 2000, Image.SCALE_SMOOTH);
-                ImageButton songButton = new ImageButton(new ImageIcon(img),song.getName());
+                ImageButton songButton = new ImageButton(new ImageIcon(img),song.getName(),song.getPath());
                 songButton.setHorizontalTextPosition(JButton.CENTER);
                 songButton.setVerticalTextPosition(JButton.BOTTOM);
                 imagePanel.add(songButton);
