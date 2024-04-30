@@ -1,4 +1,4 @@
-package rtp;
+package rtspmedia.rtp;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -20,14 +20,6 @@ public class RTPClient {
     private Thread receiveThread;
     private InetAddress serverAddress;
     private int serverPort = 25000;
-    public int getServerPort() {
-        return serverPort;
-    }
-
-    public void setServerPort(int serverPort) {
-        this.serverPort = serverPort;
-    }
-
     private long totalDuration = 300000; // Example total duration in milliseconds for a 5-minute audio
     private long currentPlaybackTime = 0; // Tracks the current playback time in milliseconds
 

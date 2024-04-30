@@ -13,7 +13,6 @@ public class ImageButton extends JButton implements ActionListener {
     public ImageButton(String imagePath, String buttonText) {
         this.imagePath = imagePath;
         this.buttonText = buttonText;
-        this.fileLocation=fileLocation;
         ImageIcon icon = new ImageIcon(imagePath);
         Image img = icon.getImage();
         Image resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize image to 100x100 pixels
@@ -47,6 +46,12 @@ public class ImageButton extends JButton implements ActionListener {
 
 
 
+    public String getFileLocation() {
+        return fileLocation;
+    }
+    public void setFileLocation(String fileLocation) {
+        this.fileLocation = fileLocation;
+    }
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();

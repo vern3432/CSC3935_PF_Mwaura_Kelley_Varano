@@ -1,4 +1,4 @@
-package rtp;
+package rtspmedia.rtp;
 
 import java.io.*;
 import java.net.*;
@@ -6,18 +6,6 @@ import javax.sound.sampled.*;
 
 public class RTPServer {
     public static final int RTP_PORT = 25000;
-    public static int getRtpPort() {
-        return RTP_PORT;
-    }
-
-    public int getClientPort() {
-        return clientPort;
-    }
-
-    public void setClientPort(int clientPort) {
-        this.clientPort = clientPort;
-    }
-
     private DatagramSocket socket;
     private InetAddress clientIP;
     private int clientPort;

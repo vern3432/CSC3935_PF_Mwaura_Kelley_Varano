@@ -1,4 +1,4 @@
-package rtspmedia.MediaClient.libraryview.libraryviewhelpers;
+package rtspmedia.MediaClient.libraryview;
 import rtspmedia.Server.LibraryMangement.*;
 import java.net.Socket;
 import java.io.ObjectInputStream;
@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.SwingUtilities;
-import rtspmedia.MediaClient.libraryview.*;
+
 import merrimackutil.json.JsonIO;
 import java.io.InvalidObjectException;
 import java.io.FileReader;

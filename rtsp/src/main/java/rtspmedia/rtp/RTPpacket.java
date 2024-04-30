@@ -1,4 +1,4 @@
-package rtp;
+package rtspmedia.rtp;
 
 public class RTPpacket {
     public int version;
