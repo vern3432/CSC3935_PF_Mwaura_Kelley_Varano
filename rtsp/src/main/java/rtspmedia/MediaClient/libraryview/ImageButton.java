@@ -26,6 +26,23 @@ public class ImageButton extends JButton implements ActionListener {
         this.setBorderPainted(false);
         this.setFocusPainted(false);
     }
+    public ImageButton(ImageIcon image, String buttonText) {
+        
+        ImageIcon icon = image;
+        Image img = icon.getImage();
+        Image resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize image to 100x100 pixels
+        this.setIcon(new ImageIcon(resizedImg));
+        
+        this.setText(buttonText);
+        this.setHorizontalTextPosition(JButton.CENTER);
+        this.setVerticalTextPosition(JButton.BOTTOM);
+        this.addActionListener(this);
+        this.setContentAreaFilled(false);
+        this.setBorderPainted(false);
+        this.setFocusPainted(false);
+    }
+
+
 
     @Override
     protected void paintComponent(Graphics g) {

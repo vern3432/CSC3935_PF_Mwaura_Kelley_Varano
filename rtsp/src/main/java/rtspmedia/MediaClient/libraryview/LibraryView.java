@@ -10,6 +10,11 @@ import java.awt.event.ActionEvent;
 import java.util.Base64;
 import rtspmedia.Server.LibraryMangement.Library; 
 import rtspmedia.Server.LibraryMangement.Song;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Base64;
+
 public class LibraryView {
     JFrame frame;
     JButton setupButton, playButton, pauseButton, tearButton, descButton;
@@ -100,34 +105,73 @@ public class LibraryView {
         frame.pack();
         frame.setVisible(true);
     }
+    public LibraryView(Library library) {
+        // Initialize frame
+        frame = new JFrame("Client Library");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setBackground(Color.BLACK);
 
-    public LibraryView(rtspmedia.Server.LibraryMangement.Library libraryData) {
-        this(); // Call the default constructor to set up the frame and panels
-        populateLibrary(libraryData);
+        // Initialize panels
+        mainPanel = new JPanel(new BorderLayout());
+        buttonPanel = new JPanel(new GridLayout(1, 5, 10, 10)); // A little space between buttons
+        imagePanel = new JPanel();
+        mainPanel.setBackground(Color.BLACK);
+        buttonPanel.setBackground(Color.BLACK);
+        imagePanel.setBackground(Color.BLACK);
+
+        // Load and display songs from the library
+        library.getSongs().forEach(song -> {
+            try {
+                byte[] imageData = Base64.getDecoder().decode(song.getAlbumImage());
+                ImageIcon icon = new ImageIcon(imageData);
+                Image img = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                ImageButton songButton = new ImageButton(new ImageIcon(img),song.getName());
+                songButton.setHorizontalTextPosition(JButton.CENTER);
+                songButton.setVerticalTextPosition(JButton.BOTTOM);
+                songButton.addActionListener(e -> System.out.println("Playing song: " + song.getName()));
+                imagePanel.add(songButton);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        JScrollPane scrollPane = new JScrollPane(imagePanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        frame.add(mainPanel);
+        frame.pack();
+        frame.setVisible(true);
     }
 
-    private void populateLibrary(rtspmedia.Server.LibraryMangement.Library libraryData) {
-        for (Song song : libraryData.getSongs()) {
-            ImageIcon icon = new ImageIcon(Base64.getDecoder().decode(song.getAlbumImage()));
-            Image img = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-            JButton button = new JButton(new ImageIcon(img));
-            button.setActionCommand(song.getName());
-            button.setToolTipText(song.getName());
-            button.addActionListener(e -> {
-                // Action to play the song or display song details
-                System.out.println("Playing song: " + e.getActionCommand());
+    public static void createAndShowLibraryViewWithDummyData() {
+        Library dummyLibrary = new Library();
+        try {
+            File imgFile = new File("/home/linxuser3/Documents/CSC3935_PF_Mwaura_Kelley_Varano/rtsp/src/main/java/rtspmedia/Server/resources/placeholder.jpg");
+            String base64Image = Base64.getEncoder().encodeToString(Files.readAllBytes(imgFile.toPath()));
+
+            // Create dummy songs
+            Song song1 = new Song("Song 1", base64Image, "path/to/song1.mp3");
+            Song song2 = new Song("Song 2", base64Image, "path/to/song2.mp3");
+            Song song3 = new Song("Song 3", base64Image, "path/to/song3.mp3");
+
+            // Add songs to the library
+            dummyLibrary.addSong(song1);
+            dummyLibrary.addSong(song2);
+            dummyLibrary.addSong(song3);
+
+            SwingUtilities.invokeLater(() -> {
+                new LibraryView(dummyLibrary);
             });
-            mainPanel.add(button);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        frame.validate();
-        frame.repaint();
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new LibraryView();
-            }
-        });
+        createAndShowLibraryViewWithDummyData();
     }
 }
