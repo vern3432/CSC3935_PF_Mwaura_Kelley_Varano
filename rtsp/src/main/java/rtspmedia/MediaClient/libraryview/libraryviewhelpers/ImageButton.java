@@ -46,6 +46,10 @@ public class ImageButton extends JButton implements ActionListener {
 
 
 
+    
+    /** 
+     * @return String
+     */
     public String getFileLocation() {
         return fileLocation;
     }

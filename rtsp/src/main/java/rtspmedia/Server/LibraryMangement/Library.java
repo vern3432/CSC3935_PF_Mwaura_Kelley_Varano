@@ -16,6 +16,10 @@ public class Library implements JSONSerializable {
     public Library() {
     }
 
+    
+    /** 
+     * @param song
+     */
     public void addSong(Song song) {
         songs.add(song);
     }

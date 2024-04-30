@@ -10,6 +10,11 @@ public class Mp3ToWavConverter {
         // Constructor logic (can be expanded if needed)
     }
     
+    
+    /** 
+     * @param mp3FilePath
+     * @param wavFilePath
+     */
     // Method to convert MP3 to WAV
     public void convertMp3ToWav(String mp3FilePath, String wavFilePath) {
         // Set the PCM signed audio format

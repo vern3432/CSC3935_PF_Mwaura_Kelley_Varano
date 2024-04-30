@@ -59,6 +59,10 @@ public class RTPClient {
         frame.setVisible(true);
     }
 
+    
+    /** 
+     * @throws LineUnavailableException
+     */
     private void initializeAudio() throws LineUnavailableException {
         AudioFormat format = new AudioFormat(
             AudioFormat.Encoding.PCM_SIGNED,

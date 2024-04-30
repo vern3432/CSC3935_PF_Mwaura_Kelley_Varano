@@ -25,6 +25,10 @@ public class RTPpacket {
         this.payloadData = data;
     }
 
+    
+    /** 
+     * @return byte[]
+     */
     // Method to get the byte array of the RTP packet
     public byte[] getPacketBytes() {
         // Calculate packet length

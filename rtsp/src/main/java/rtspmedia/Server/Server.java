@@ -45,6 +45,10 @@ public class Server {
             e.printStackTrace();
         }
     }
+    
+    /** 
+     * @param args
+     */
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server is listening on port " + PORT);

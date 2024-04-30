@@ -53,6 +53,10 @@ public class Player {
         frame.setVisible(true);
     }
 
+    
+    /** 
+     * @param args
+     */
     public static void main(String[] args) {
         // Create a new instance of Client to initialize the GUI
         new Player();

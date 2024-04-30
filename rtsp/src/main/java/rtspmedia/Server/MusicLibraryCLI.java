@@ -23,6 +23,11 @@ public class MusicLibraryCLI {
     private static String libraryFilePath = "library.json"; // Default library file path
     private static Library library; // Library object
 
+    
+    /** 
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         if (args.length > 0) {
             libraryFilePath = args[0]; // Allow user to specify a different library file

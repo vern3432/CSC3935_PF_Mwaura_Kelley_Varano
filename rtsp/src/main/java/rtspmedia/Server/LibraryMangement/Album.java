@@ -15,6 +15,10 @@ public class Album implements JSONSerializable {
     public Album() {
     }
 
+    
+    /** 
+     * @param song
+     */
     public void addSong(Song song) {
         songs.add(song);
     }

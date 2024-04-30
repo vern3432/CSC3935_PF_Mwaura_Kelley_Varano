@@ -204,6 +204,10 @@ public class LibraryView extends JFrame {
         }
     }
 
+    
+    /** 
+     * @param args
+     */
     public static void main(String[] args) {
         createAndShowLibraryViewWithDummyData();
     }

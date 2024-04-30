@@ -17,6 +17,11 @@ public class ThemeManager {
         }
     }
 
+    
+    /** 
+     * @param frame
+     * @param panels
+     */
     public void applyTheme(JFrame frame, JPanel... panels) {
         frame.getContentPane().setBackground(background);
         for (JPanel panel : panels) {

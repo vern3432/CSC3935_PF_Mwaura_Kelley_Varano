@@ -13,6 +13,10 @@ public class RTPServer {
     private byte[] buffer = new byte[4096];
     File audioFile;
 
+    
+    /** 
+     * @return File
+     */
     public File getAudioFile() {
         return audioFile;
     }
@@ -23,7 +27,7 @@ public class RTPServer {
 
     public RTPServer() throws SocketException {
         this.socket = new DatagramSocket(RTP_PORT);
-        audioFile = new File("/home/linxuser3/Documents/CSC3935_PF_Mwaura_Kelley_Varano/SampleAudio/YoullFindaWay.wav");
+        audioFile = new File("SampleAudio/YoullFindaWay.wav");
 
     }
 

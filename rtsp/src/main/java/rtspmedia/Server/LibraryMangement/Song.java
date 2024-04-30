@@ -9,6 +9,10 @@ import merrimackutil.json.types.JSONObject;
 
 public class Song implements JSONSerializable {
     private String name;
+    
+    /** 
+     * @return String
+     */
     public String getName() {
         return name;
     }

@@ -18,6 +18,10 @@ public class Client  {
     private static final int PORT = 12345;
 
 
+    
+    /** 
+     * @param args
+     */
     public static void main(String[] args) {
         try (Socket socket = new Socket(HOST, PORT);
              ObjectInputStream input = new ObjectInputStream(socket.getInputStream())) {
