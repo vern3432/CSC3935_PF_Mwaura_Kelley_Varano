@@ -11,3 +11,6 @@ Todo:
 3. Impliment mp3 conversion proccess in the case of an mp3 file uploaded 
 4. Decide whether to use relative or hard paths in json. (Its hard rn)
 5. Properly Impliment Pause feature(It stops it but does not let it resume)
+6. Make it so that once a song is done or closed, a new RTP stream cna be init
+7. Add Album Covers to Audio Player
+8. Add Song Title to Audio Player 
