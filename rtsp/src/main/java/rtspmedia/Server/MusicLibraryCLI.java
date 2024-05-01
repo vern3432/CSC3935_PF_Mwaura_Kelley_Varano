@@ -1,13 +1,16 @@
 package rtspmedia.Server;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.awt.image.BufferedImage;
+import java.awt.Graphics2D;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.Scanner;
-
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -52,7 +55,8 @@ public class MusicLibraryCLI {
             switch (tokens[0]) {
                 case "AddSong":
                     if (tokens.length > 1) {
-                        addSong();
+                        String songName = tokens[1].trim(); // Correctly capture the full song name
+                        addSong(songName);
                         saveLibraryToFile(library, libraryFilePath);
                     } else {
                         System.out.println("Error: Missing song name.");
@@ -90,7 +94,7 @@ public class MusicLibraryCLI {
         scanner.close();
         System.out.println("Exiting Music Library CLI.");
     }
-    public static void addSong() throws IOException {
+    public static void addSong(String name) throws IOException {
         JFrame frame = new JFrame();
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter songFilter = new FileNameExtensionFilter("MP3 Files", "mp3");
@@ -106,10 +110,15 @@ public class MusicLibraryCLI {
             int imageResult = fileChooser.showOpenDialog(frame);
             if (imageResult == JFileChooser.APPROVE_OPTION) {
                 String imagePath = fileChooser.getSelectedFile().getAbsolutePath();
-                // Add song to library and save to file
-                File imgFile = new File(imagePath);
-                String base64Image = Base64.getEncoder().encodeToString(Files.readAllBytes(imgFile.toPath()));
-                library.addSong(new Song("Song Name", base64Image, songPath));
+                // Resize the image to compress it
+                BufferedImage originalImage = ImageIO.read(new File(imagePath));
+                int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
+                BufferedImage resizedImage = resizeImage(originalImage, type, 100, 100); // Resize to 100x100 pixels
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(resizedImage, "jpg", baos);
+                byte[] imageBytes = baos.toByteArray();
+                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                library.addSong(new Song(name, base64Image, songPath));
                 saveLibraryToFile(library, libraryFilePath);
             } else {
                 System.out.println("No image selected or operation cancelled.");
@@ -209,5 +218,13 @@ public class MusicLibraryCLI {
                 library = new Library(); // Initialize a new empty Library if there's an error loading
             }
         }
+    }
+
+    private static BufferedImage resizeImage(BufferedImage originalImage, int type, int IMG_WIDTH, int IMG_HEIGHT) {
+        BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
+        Graphics2D g = resizedImage.createGraphics();
+        g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
+        g.dispose();
+        return resizedImage;
     }
 }

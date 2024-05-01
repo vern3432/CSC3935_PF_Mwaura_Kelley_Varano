@@ -52,7 +52,11 @@ public class MusicLibraryCLI {
             switch (tokens[0]) {
                 case "AddSong":
                     if (tokens.length > 1) {
-                        addSong();
+                        String songName = "";
+                        for(int i=1;i<tokens.length-1;i++){
+                            songName+=tokens[i]+" ";
+                        }
+                        addSong(songName);
                         saveLibraryToFile(library, libraryFilePath);
                     } else {
                         System.out.println("Error: Missing song name.");
@@ -90,7 +94,7 @@ public class MusicLibraryCLI {
         scanner.close();
         System.out.println("Exiting Music Library CLI.");
     }
-    public static void addSong() throws IOException {
+    public static void addSong(String name) throws IOException {
         JFrame frame = new JFrame();
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter songFilter = new FileNameExtensionFilter("MP3 Files", "mp3");
@@ -109,7 +113,7 @@ public class MusicLibraryCLI {
                 // Add song to library and save to file
                 File imgFile = new File(imagePath);
                 String base64Image = Base64.getEncoder().encodeToString(Files.readAllBytes(imgFile.toPath()));
-                library.addSong(new Song("Song Name", base64Image, songPath));
+                library.addSong(new Song(name, base64Image, songPath));
                 saveLibraryToFile(library, libraryFilePath);
             } else {
                 System.out.println("No image selected or operation cancelled.");
@@ -139,7 +143,7 @@ public class MusicLibraryCLI {
 
     public static void ViewLibrary() {
         SwingUtilities.invokeLater(() -> {
-            new LibraryView(library);
+            new LibraryView(library,null,null,null);
         });
     }
 
