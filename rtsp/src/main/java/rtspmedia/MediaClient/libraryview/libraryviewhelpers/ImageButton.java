@@ -21,6 +21,15 @@ public class ImageButton extends JButton implements ActionListener {
     private String fileLocation;
     public ObjectInputStream input;
     public ObjectOutputStream output;
+    public long length;
+    public long getLength() {
+        return length;
+    }
+
+    public void setLength(long length) {
+        this.length = length;
+    }
+
     public ObjectInputStream getInput() {
         return input;
     }
@@ -121,12 +130,7 @@ public class ImageButton extends JButton implements ActionListener {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
-                try {
-                    RTPClient client = new RTPClient(convertedValue);
-                } catch (SocketException | UnknownHostException | LineUnavailableException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
+
         
             }
         } catch (IOException | ClassNotFoundException ex) {

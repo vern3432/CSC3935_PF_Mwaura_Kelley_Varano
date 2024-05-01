@@ -172,6 +172,9 @@ public class LibraryView extends JFrame {
                 songButton.setSocket(this.socket);
                 songButton.setOutput(this.output);
                 songButton.setInput(this.input);
+                System.out.println("Determined Length:"+ song.getLength());
+                songButton.setLength(Long.valueOf(Integer.parseInt(song.getLength())));
+                // songButton.setLength();
                 imagePanel.add(songButton);
 
 

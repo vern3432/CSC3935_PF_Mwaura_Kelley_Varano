@@ -41,7 +41,7 @@ public class Server {
             while (connectionCount < MAX_CONNECTIONS) { // Limit the number of concurrent connections
                 Socket socket = serverSocket.accept();
                 ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-                output.flush(); // Flush to ensure the header is sent
+                output.flush(); // Flush to ensure the hea/home/linxuser3/Documents/CSC3935_PF_Mwaura_Kelley_Varano-1/er is sent
                 ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
                 new Thread(new ClientHandler(socket, input, output)).start();
                 connectionCount++;

@@ -21,6 +21,15 @@ public class RTPClient {
     private InetAddress serverAddress;
     private int serverPort = 25000;
     private long totalDuration = 300000; // Example total duration in milliseconds for a 5-minute audio
+
+    public long getTotalDuration() {
+        return totalDuration;
+    }
+
+    public void setTotalDuration(long totalDuration) {
+        this.totalDuration = totalDuration;
+    }
+
     private long currentPlaybackTime = 0; // Tracks the current playback time in milliseconds
 
     public RTPClient() throws LineUnavailableException, SocketException, UnknownHostException {
@@ -31,6 +40,15 @@ public class RTPClient {
     }
 
     public RTPClient(int port ) throws LineUnavailableException, SocketException, UnknownHostException {
+        this.serverPort=port;
+        socket = new DatagramSocket();
+        serverAddress = InetAddress.getByName("localhost");
+        initializeAudio();
+        initializeGUI();
+    }
+
+    public RTPClient(int port,long length ) throws LineUnavailableException, SocketException, UnknownHostException {
+        this.totalDuration=length;
         this.serverPort=port;
         socket = new DatagramSocket();
         serverAddress = InetAddress.getByName("localhost");
