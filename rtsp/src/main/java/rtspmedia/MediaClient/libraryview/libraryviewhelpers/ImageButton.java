@@ -24,9 +24,11 @@ public class ImageButton extends JButton implements ActionListener {
     public Socket getSocket() {
         return socket;
     }
+
     public void setSocket(Socket socket) {
         this.socket = socket;
     }
+
     public ImageButton(String imagePath, String buttonText) {
         this.imagePath = imagePath;
         this.buttonText = buttonText;
@@ -34,7 +36,7 @@ public class ImageButton extends JButton implements ActionListener {
         Image img = icon.getImage();
         Image resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize image to 100x100 pixels
         this.setIcon(new ImageIcon(resizedImg));
-        
+
         this.setText(buttonText);
         this.setHorizontalTextPosition(JButton.CENTER);
         this.setVerticalTextPosition(JButton.BOTTOM);
@@ -43,15 +45,16 @@ public class ImageButton extends JButton implements ActionListener {
         this.setBorderPainted(false);
         this.setFocusPainted(false);
     }
-    public ImageButton(ImageIcon image, String buttonText,String fileLocation) {
+
+    public ImageButton(ImageIcon image, String buttonText, String fileLocation) {
         this.buttonText = buttonText;
-        this.fileLocation=fileLocation;
+        this.fileLocation = fileLocation;
         System.out.println(fileLocation);
         ImageIcon icon = image;
         Image img = icon.getImage();
         Image resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize image to 100x100 pixels
         this.setIcon(new ImageIcon(resizedImg));
-        
+
         this.setText(buttonText);
         this.setHorizontalTextPosition(JButton.CENTER);
         this.setVerticalTextPosition(JButton.BOTTOM);
@@ -60,20 +63,18 @@ public class ImageButton extends JButton implements ActionListener {
         this.setBorderPainted(false);
         this.setFocusPainted(false);
     }
-    
 
-
-
-    
-    /** 
+    /**
      * @return String
      */
     public String getFileLocation() {
         return fileLocation;
     }
+
     public void setFileLocation(String fileLocation) {
         this.fileLocation = fileLocation;
     }
+
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
@@ -89,14 +90,23 @@ public class ImageButton extends JButton implements ActionListener {
         // Define the function to be triggered on click
         System.out.println(buttonText + " clicked!");
         try (ObjectOutputStream output = new ObjectOutputStream(this.socket.getOutputStream())) {
-            output.writeObject("`Directory:"+fileLocation);
+            output.writeObject("`Directory:" + fileLocation);
             output.flush();
+            System.out.println("sent:" + fileLocation);
+
             ObjectInputStream input = new ObjectInputStream(this.socket.getInputStream());
+            while (input.available() == 0) {
+                try {
+                    Thread.sleep(100); // Wait for 100 ms
+                } catch (InterruptedException e1) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
             String request = (String) input.readObject();
             int convertedValue = Integer.parseInt(request);
-            
 
-        try {
+            try {
                 RTPClient client = new RTPClient(convertedValue);
                 client.startReceiving();
             } catch (SocketException | UnknownHostException | LineUnavailableException e1) {
@@ -112,8 +122,5 @@ public class ImageButton extends JButton implements ActionListener {
             e2.printStackTrace();
         }
 
-
-
-        
     }
 }

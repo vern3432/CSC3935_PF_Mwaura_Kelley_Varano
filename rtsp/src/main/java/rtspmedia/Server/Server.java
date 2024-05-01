@@ -40,7 +40,10 @@ public class Server {
 
             while (connectionCount < MAX_CONNECTIONS) { // Limit the number of concurrent connections
                 Socket socket = serverSocket.accept();
-                new Thread(new ClientHandler(socket)).start();
+                ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+                output.flush(); // Flush to ensure the header is sent
+                ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+                new Thread(new ClientHandler(socket, input, output)).start();
                 connectionCount++;
             }
         } catch (IOException e) {                       
@@ -59,7 +62,10 @@ public class Server {
 
             while (connectionCount < MAX_CONNECTIONS) { // Limit the number of concurrent connections
                 Socket socket = serverSocket.accept();
-                new Thread(new ClientHandler(socket)).start();
+                ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+                output.flush(); // Flush to ensure the header is sent
+                ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+                new Thread(new ClientHandler(socket, input, output)).start();
                 connectionCount++;
             }
         } catch (IOException e) {                       
@@ -70,22 +76,27 @@ public class Server {
 
     private static class ClientHandler implements Runnable {
         private Socket socket;
+        private ObjectInputStream input;
+        private ObjectOutputStream output;
 
-        public ClientHandler(Socket socket) {
+        public ClientHandler(Socket socket, ObjectInputStream input, ObjectOutputStream output) {
             this.socket = socket;
+            this.input = input;
+            this.output = output;
         }
 
         public void run() {
-            try (ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream())) {
+            try {
                 ensureLibraryFileExists();
                 output.writeObject(Server.library.serialize());
                 output.flush();
+                
                 String request = "";
                 while (!request.contains("Directory:")) {
-                    ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
                     request = (String) input.readObject();
                 }
                 if (request.contains("Directory:")) {
+                    System.out.println("Dir:"+request);
                     request = request.replace("Directory:", "");
                     RTPServer rtpserver = new RTPServer();
                     int port = rtpserver.getRTP_PORT();
@@ -130,7 +141,7 @@ public class Server {
                 Server.library.deserialize(JsonIO.readObject(jsonString));
             } catch (Exception e) {
                 System.out.println("Error loading the library file: " + e.getMessage());
-                Server.library = new Library(); // Initialize a new empty Library if there's an error loading
+                Server.library =  new Library(); // Initialize a new empty Library if there's an error loading
             }
         }
     }
