@@ -9,18 +9,7 @@ import merrimackutil.json.types.JSONObject;
 
 public class Song implements JSONSerializable {
     private String name;
-    private int length;
-    private String albumImage; // Base64 encoded image
-    private String path; // Absolute path to the song file
-
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
-
+    
     /** 
      * @return String
      */
@@ -48,20 +37,14 @@ public class Song implements JSONSerializable {
         this.path = path;
     }
 
+    private String albumImage; // Base64 encoded image
+    private String path; // Absolute path to the song file
 
     public Song(String name, String albumImage, String path) {
         this.name = name;
         this.albumImage = albumImage;
         this.path = path;
     }
-    
-    public Song(String name, String albumImage, String path,int length) {
-        this.length = length;
-        this.name = name;
-        this.albumImage = albumImage;
-        this.path = path;
-    }
-    
 
     @Override
     public void deserialize(JSONType json) throws InvalidObjectException {
@@ -72,7 +55,6 @@ public class Song implements JSONSerializable {
         this.name = jsonObj.getString("name");
         this.albumImage = jsonObj.getString("albumImage");
         this.path = jsonObj.getString("path");
-        this.length = jsonObj.getInt("length"); // Deserialize length
     }
 
     @Override
@@ -86,7 +68,6 @@ public class Song implements JSONSerializable {
         jsonObj.put("name", name);
         jsonObj.put("albumImage", albumImage);
         jsonObj.put("path", path);
-        jsonObj.put("length", length);  // Include the length attribute
         return jsonObj;
     }
 }

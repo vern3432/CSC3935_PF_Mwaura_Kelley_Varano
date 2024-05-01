@@ -11,10 +11,6 @@ import java.nio.file.Files;
 import java.util.Base64;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -34,9 +30,8 @@ public class MusicLibraryCLI {
     /** 
      * @param args
      * @throws IOException
-     * @throws UnsupportedAudioFileException 
      */
-    public static void main(String[] args) throws IOException, UnsupportedAudioFileException {
+    public static void main(String[] args) throws IOException {
         if (args.length > 0) {
             libraryFilePath = args[0]; // Allow user to specify a different library file
         }
@@ -60,10 +55,7 @@ public class MusicLibraryCLI {
             switch (tokens[0]) {
                 case "AddSong":
                     if (tokens.length > 1) {
-                        String songName = "";
-                        for(int i=1;i<tokens.length-1;i++){
-                            songName+=tokens[i]+" ";
-                        }
+                        String songName = tokens[1].trim(); // Correctly capture the full song name
                         addSong(songName);
                         saveLibraryToFile(library, libraryFilePath);
                     } else {
@@ -102,35 +94,31 @@ public class MusicLibraryCLI {
         scanner.close();
         System.out.println("Exiting Music Library CLI.");
     }
-    public static void addSong(String name) throws IOException, UnsupportedAudioFileException {
+    public static void addSong(String name) throws IOException {
         JFrame frame = new JFrame();
         JFileChooser fileChooser = new JFileChooser();
-        FileNameExtensionFilter songFilter = new FileNameExtensionFilter("Audio Files", "mp3", "wav");
+        FileNameExtensionFilter songFilter = new FileNameExtensionFilter("MP3 Files", "mp3");
         fileChooser.setFileFilter(songFilter);
-        fileChooser.setDialogTitle("Select an Audio file");
-        
+        fileChooser.setDialogTitle("Select an MP3 file");
 
         int songResult = fileChooser.showOpenDialog(frame);
         if (songResult == JFileChooser.APPROVE_OPTION) {
             String songPath = fileChooser.getSelectedFile().getAbsolutePath();
-            // Calculate the length of the song in milliseconds
-            File audioFile = new File(songPath);
-            //183768
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-            AudioFormat format = audioStream.getFormat();
-            long frames = audioStream.getFrameLength();
-            double durationInSeconds = (frames+0.0) / format.getFrameRate();  
-            int durationInMilliSeconds = (int)(durationInSeconds * 1000);
             fileChooser.setDialogTitle("Select an Image for the Album");
             fileChooser.setFileFilter(new FileNameExtensionFilter("Image Files", "jpg", "png"));
 
             int imageResult = fileChooser.showOpenDialog(frame);
             if (imageResult == JFileChooser.APPROVE_OPTION) {
                 String imagePath = fileChooser.getSelectedFile().getAbsolutePath();
-                // Add song to library and save to file
-                File imgFile = new File(imagePath);
-                String base64Image = Base64.getEncoder().encodeToString(Files.readAllBytes(imgFile.toPath()));
-                library.addSong(new Song(name, base64Image, songPath,durationInMilliSeconds));
+                // Resize the image to compress it
+                BufferedImage originalImage = ImageIO.read(new File(imagePath));
+                int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
+                BufferedImage resizedImage = resizeImage(originalImage, type, 100, 100); // Resize to 100x100 pixels
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(resizedImage, "jpg", baos);
+                byte[] imageBytes = baos.toByteArray();
+                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                library.addSong(new Song(name, base64Image, songPath));
                 saveLibraryToFile(library, libraryFilePath);
             } else {
                 System.out.println("No image selected or operation cancelled.");
@@ -174,13 +162,13 @@ public class MusicLibraryCLI {
         System.out.println("Library Contents:");
         System.out.println("Songs:");
         for (Song song : library.getSongs()) {
-            System.out.println("Name: " + song.getName() + ", Album Image: " + song.getAlbumImage() + ", Path: " + song.getPath() + ", Length: " + song.getLength() + " ms");
+            System.out.println("Name: " + song.getName() + ", Album Image: " + song.getAlbumImage() + ", Path: " + song.getPath());
         }
         System.out.println("Albums:");
         for (Album album : library.getAlbums()) {
             System.out.println("Album:");
             for (Song song : album.getSongs()) {
-                System.out.println("  Song: " + song.getName() + ", Album Image: " + song.getAlbumImage() + ", Path: " + song.getPath() + ", Length: " + song.getLength() + " ms");
+                System.out.println("  Song: " + song.getName() + ", Album Image: " + song.getAlbumImage() + ", Path: " + song.getPath());
             }
         }
     }
@@ -230,5 +218,13 @@ public class MusicLibraryCLI {
                 library = new Library(); // Initialize a new empty Library if there's an error loading
             }
         }
+    }
+
+    private static BufferedImage resizeImage(BufferedImage originalImage, int type, int IMG_WIDTH, int IMG_HEIGHT) {
+        BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
+        Graphics2D g = resizedImage.createGraphics();
+        g.drawImage(originalImage, 0, 0, IMG_WIDTH, IMG_HEIGHT, null);
+        g.dispose();
+        return resizedImage;
     }
 }

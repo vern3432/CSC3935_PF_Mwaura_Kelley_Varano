@@ -7,7 +7,7 @@ Final Project for CSC3935: Moses Mwaura, Aidan Varano, Sean Kelley
 
 Todo:
 
-1. ~Fix Ability for Multiple RTP streams to be opened, broken RN.(DONE)~
+1. Fix Ability for Multiple RTP streams to be opened, broken RN.  
 2. Implement RTCP(If we feel its needed)
 2.  Make song legnth send in json and update to RTPCLIENT for progress bar caclualtion (Hardcoded rn), make it auto close the player when this works
 3. Make sure proccess of LibraryView doenst close when RTP Client Does  

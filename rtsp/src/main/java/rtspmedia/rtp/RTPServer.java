@@ -32,7 +32,6 @@ public class RTPServer {
     }
 
     public RTPServer(String filepathString) throws SocketException {
-        this.RTP_PORT=setAvailablePort();
         this.audioFile=new File(filepathString);
         this.socket = new DatagramSocket(RTP_PORT);
 
@@ -104,7 +103,6 @@ public class RTPServer {
         }
     }
     public int setAvailablePort() {
-        
         ServerSocket serverSocket = null;
         try {
             // Create a new ServerSocket and get its port
