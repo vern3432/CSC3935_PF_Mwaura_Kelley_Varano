@@ -5,13 +5,22 @@ import java.net.*;
 import javax.sound.sampled.*;
 
 public class RTPServer {
-    public static final int RTP_PORT = 25000;
+    public  int RTP_PORT = 25000;
+    public int getRTP_PORT() {
+        return RTP_PORT;
+    }
+
+    public void setRTP_PORT(int rTP_PORT) {
+        RTP_PORT = rTP_PORT;
+    }
+
     private DatagramSocket socket;
     private InetAddress clientIP;
     private int clientPort;
     private AudioInputStream audioStream;
     private byte[] buffer = new byte[4096];
     File audioFile;
+    String filePath="SampleAudio/YoullFindaWay.wav";
 
     /**
      * @return File
@@ -23,16 +32,42 @@ public class RTPServer {
     public void setAudioFile(File audioFile) {
         this.audioFile = audioFile;
     }
+   
+    public int setAvailablePort() {
+        ServerSocket serverSocket = null;
+        try {
+            // Create a new ServerSocket and get its port
+            serverSocket = new ServerSocket(0);
+            int port = serverSocket.getLocalPort();
+            // Close the ServerSocket
+            serverSocket.close();
+            // Set the RTP_PORT to the found port
+            this.RTP_PORT = port;
+            return port;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (serverSocket != null) {
+                try {
+                    serverSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return -1; // Return -1 if no port could be found
+    }
 
     public RTPServer() throws SocketException {
         this.socket = new DatagramSocket(RTP_PORT);
-        audioFile = new File("SampleAudio/YoullFindaWay.wav");
 
     }
 
     public RTPServer(String filePath) throws SocketException {
-        this.socket = new DatagramSocket(RTP_PORT);
         audioFile = new File(filePath);
+        setAvailablePort();
+        this.socket = new DatagramSocket(RTP_PORT);
+
     }
 
     public void start() {

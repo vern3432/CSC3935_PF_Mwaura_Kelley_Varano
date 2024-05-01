@@ -1,15 +1,32 @@
 package rtspmedia.MediaClient.libraryview.libraryviewhelpers;
 
+import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
+
+import rtspmedia.rtp.RTPClient;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class ImageButton extends JButton implements ActionListener {
     private String imagePath;
     private String buttonText;
     private String fileLocation;
+    Socket socket;
 
+    public Socket getSocket() {
+        return socket;
+    }
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
     public ImageButton(String imagePath, String buttonText) {
         this.imagePath = imagePath;
         this.buttonText = buttonText;
@@ -43,6 +60,7 @@ public class ImageButton extends JButton implements ActionListener {
         this.setBorderPainted(false);
         this.setFocusPainted(false);
     }
+    
 
 
 
@@ -70,5 +88,32 @@ public class ImageButton extends JButton implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // Define the function to be triggered on click
         System.out.println(buttonText + " clicked!");
+        try (ObjectOutputStream output = new ObjectOutputStream(this.socket.getOutputStream())) {
+            output.writeObject("`Directory:"+fileLocation);
+            output.flush();
+            ObjectInputStream input = new ObjectInputStream(this.socket.getInputStream());
+            String request = (String) input.readObject();
+            int convertedValue = Integer.parseInt(request);
+            
+
+        try {
+                RTPClient client = new RTPClient(convertedValue);
+                client.startReceiving();
+            } catch (SocketException | UnknownHostException | LineUnavailableException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+
+        } catch (IOException e2) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace();
+        } catch (ClassNotFoundException e2) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace();
+        }
+
+
+
+        
     }
 }

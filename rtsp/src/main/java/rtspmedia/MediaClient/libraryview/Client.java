@@ -22,7 +22,7 @@ public class Client  {
     
     /** 
      * @param args
-    /home/linxuser3/Documents/CSC3935_PF_Mwaura_Kelley_Varano/SampleAudio/Behind Enemy Lines.mp3 */
+    /home/linxuser3/DocumSocket"Directory:"ents/CSC3935_PF_Mwaura_Kelley_Varano/SampleAudio/Behind Enemy Lines.mp3 */
     public static void main(String[] args) {
         try (Socket socket = new Socket(HOST, PORT);
              ObjectInputStream input = new ObjectInputStream(socket.getInputStream())) {
@@ -31,7 +31,7 @@ public class Client  {
             Library dummyLibrary= new Library();
             dummyLibrary.deserialize(JsonIO.readObject(library1));
             SwingUtilities.invokeLater(() -> {
-                new LibraryView(dummyLibrary);
+                new LibraryView(dummyLibrary,socket);
             });
 
         } catch (IOException | ClassNotFoundException e) {

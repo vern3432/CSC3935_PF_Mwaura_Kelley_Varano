@@ -5,6 +5,8 @@ import java.net.Socket;
 import java.io.ObjectOutputStream;
 import java.io.IOException;
 import rtspmedia.Server.LibraryMangement.*;
+import rtspmedia.rtp.RTPServer;
+
 import java.net.Socket;
 import java.io.ObjectInputStream;
 import java.io.IOException;
@@ -78,8 +80,25 @@ public class Server {
                 ensureLibraryFileExists();
                 output.writeObject(Server.library.serialize());
                 output.flush();
+                String request = "";
+                while (!request.contains("Directory:")) {
+                    ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+                    request = (String) input.readObject();
+                }
+                if (request.contains("Directory:")) {
+                    request = request.replace("Directory:", "");
+                    RTPServer rtpserver = new RTPServer();
+                    int port = rtpserver.getRTP_PORT();
+                    output.writeObject(port);
+                    output.flush();
+                    rtpserver.start();
+                }
+
             } catch (IOException e) {
                 System.out.println("Error handling client: " + e.getMessage());
+            } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
     }

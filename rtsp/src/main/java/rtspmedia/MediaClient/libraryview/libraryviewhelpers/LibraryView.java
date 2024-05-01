@@ -18,12 +18,15 @@ import rtspmedia.rtp.RTPServer;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.util.Base64;
 
 public class LibraryView extends JFrame {
+    Socket socket;
     JFrame frame;
     JButton setupButton, playButton, pauseButton, tearButton, descButton;
     JPanel mainPanel, buttonPanel, imagePanel;
@@ -115,8 +118,9 @@ public class LibraryView extends JFrame {
         frame.setVisible(true);
     }
 
-    public LibraryView(Library library) {
+    public LibraryView(Library library,Socket socket) {
         // Initialize frame
+        this.socket=socket;
         frame = new JFrame("Client Library");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.BLACK);
@@ -161,33 +165,7 @@ public class LibraryView extends JFrame {
                 ImageButton songButton = new ImageButton(new ImageIcon(img), song.getName(), song.getPath());
                 songButton.setHorizontalTextPosition(JButton.CENTER);
                 songButton.setVerticalTextPosition(JButton.BOTTOM);
-
-                songButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        Thread serverThread = new Thread(() -> {
-                            RTPServer rtpServer;
-                            try {
-                                rtpServer = new RTPServer(song.getPath());
-                                rtpServer.start();
-                            } catch (SocketException e1) {
-                                // TODO Auto-generated catch block
-                                e1.printStackTrace();
-                            }
-                        });
-
-                        serverThread.start();
-
-                        try {
-                            RTPClient client = new RTPClient();
-                        } catch (SocketException | UnknownHostException | LineUnavailableException e1) {
-                            // TODO Auto-generated catch block
-                            e1.printStackTrace();
-                        }
-
-                    }
-                });
-
+                songButton.setSocket(this.socket);
                 imagePanel.add(songButton);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -228,7 +206,7 @@ public class LibraryView extends JFrame {
             dummyLibrary.addSong(song3);
 
             SwingUtilities.invokeLater(() -> {
-                new LibraryView(dummyLibrary);
+                new LibraryView(dummyLibrary,null);
             });
         } catch (IOException e) {
             e.printStackTrace();

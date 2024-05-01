@@ -30,6 +30,15 @@ public class RTPClient {
         initializeGUI();
     }
 
+    public RTPClient(int port) throws LineUnavailableException, SocketException, UnknownHostException {
+        this.serverPort = port;
+        socket = new DatagramSocket();
+        serverAddress = InetAddress.getByName("localhost");
+        initializeAudio();
+        initializeGUI();
+    }
+
+
     private void initializeGUI() {
         frame = new JFrame("RTP Audio Client");
         playButton = new JButton("Play");
@@ -87,7 +96,7 @@ public class RTPClient {
         }
     }
 
-    private void startReceiving() {
+    public void startReceiving() {
         receiveThread = new Thread(() -> {
             byte[] buf = new byte[4096];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
