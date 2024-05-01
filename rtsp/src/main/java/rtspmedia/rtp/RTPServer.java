@@ -34,7 +34,6 @@ public class RTPServer {
     public RTPServer(String filepathString) throws SocketException {
         this.audioFile=new File(filepathString);
         this.socket = new DatagramSocket(RTP_PORT);
-        audioFile = new File("SampleAudio/YoullFindaWay.wav");
 
     }
     public int getRTP_PORT() {

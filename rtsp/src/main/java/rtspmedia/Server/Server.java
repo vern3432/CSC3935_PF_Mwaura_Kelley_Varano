@@ -97,8 +97,9 @@ public class Server {
                 if (message instanceof String && ((String) message).contains("Directory:")) {
                     System.out.println("Client says: " + message);
                     String request = (String)message;
+                     request = request.replace("Directory:", "");
                     RTPServer rtpserver = new RTPServer(request);
-                    int port = rtpserver.getRTP_PORT();;
+                    int port = rtpserver.getRTP_PORT();
                     // Send a response back to the client
                     output.writeObject(Integer.toString(port));
                     output.flush();
