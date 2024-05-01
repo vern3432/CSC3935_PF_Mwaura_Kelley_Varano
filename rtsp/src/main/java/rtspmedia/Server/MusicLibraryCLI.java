@@ -139,7 +139,7 @@ public class MusicLibraryCLI {
 
     public static void ViewLibrary() {
         SwingUtilities.invokeLater(() -> {
-            new LibraryView(library,null);
+            new LibraryView(library,null,null,null);
         });
     }
 

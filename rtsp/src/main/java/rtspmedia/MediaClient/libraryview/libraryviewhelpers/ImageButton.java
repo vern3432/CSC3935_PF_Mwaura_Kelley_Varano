@@ -19,6 +19,24 @@ public class ImageButton extends JButton implements ActionListener {
     private String imagePath;
     private String buttonText;
     private String fileLocation;
+    public ObjectInputStream input;
+    public ObjectOutputStream output;
+    public ObjectInputStream getInput() {
+        return input;
+    }
+
+    public void setInput(ObjectInputStream input) {
+        this.input = input;
+    }
+
+    public ObjectOutputStream getOutput() {
+        return output;
+    }
+
+    public void setOutput(ObjectOutputStream output) {
+        this.output = output;
+    }
+
     Socket socket;
 
     public Socket getSocket() {
@@ -87,40 +105,37 @@ public class ImageButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Define the function to be triggered on click
-        System.out.println(buttonText + " clicked!");
-        try (ObjectOutputStream output = new ObjectOutputStream(this.socket.getOutputStream())) {
-            output.writeObject("`Directory:" + fileLocation);
-            output.flush();
-            System.out.println("sent:" + fileLocation);
-
-            ObjectInputStream input = new ObjectInputStream(this.socket.getInputStream());
-            while (input.available() == 0) {
+        try {
+            if (socket != null && !socket.isClosed()) {
+                output.writeObject("Directory:"+this.fileLocation);
+                output.flush();
+                output.reset(); // Reset the stream to avoid caching objects
+    
+                // Now, receive a response from the server
+                String message = (String) input.readObject();
+                System.out.println("Received from server: " + message);
+                int convertedValue = Integer.parseInt(message);
                 try {
-                    Thread.sleep(100); // Wait for 100 ms
-                } catch (InterruptedException e1) {
-                    Thread.currentThread().interrupt();
-                    return;
+                    RTPClient client = new RTPClient(convertedValue);
+                    client.startReceiving();
+                } catch (SocketException | UnknownHostException | LineUnavailableException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
                 }
+                try {
+                    RTPClient client = new RTPClient(convertedValue);
+                    client.startReceiving();
+                } catch (SocketException | UnknownHostException | LineUnavailableException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+        
             }
-            String request = (String) input.readObject();
-            int convertedValue = Integer.parseInt(request);
-
-            try {
-                RTPClient client = new RTPClient(convertedValue);
-                client.startReceiving();
-            } catch (SocketException | UnknownHostException | LineUnavailableException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-
-        } catch (IOException e2) {
-            // TODO Auto-generated catch block
-            e2.printStackTrace();
-        } catch (ClassNotFoundException e2) {
-            // TODO Auto-generated catch block
-            e2.printStackTrace();
+        } catch (IOException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+            System.out.println("Error communicating with the server: " + ex.getMessage());
         }
-
     }
+    
+    
 }

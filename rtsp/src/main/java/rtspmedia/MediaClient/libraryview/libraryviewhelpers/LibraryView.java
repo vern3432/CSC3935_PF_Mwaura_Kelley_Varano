@@ -9,6 +9,7 @@ import java.io.FilenameFilter;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.Base64;
+import java.io.ObjectInputStream;
 
 import rtspmedia.Server.LibraryMangement.Library;
 import rtspmedia.Server.LibraryMangement.Song;
@@ -31,7 +32,8 @@ public class LibraryView extends JFrame {
     JButton setupButton, playButton, pauseButton, tearButton, descButton;
     JPanel mainPanel, buttonPanel, imagePanel;
     JLabel iconLabel;
-
+    ObjectOutputStream output;
+    ObjectInputStream input;
     public LibraryView() {
         // Initialize frame
         frame = new JFrame("Client");
@@ -118,7 +120,9 @@ public class LibraryView extends JFrame {
         frame.setVisible(true);
     }
 
-    public LibraryView(Library library,Socket socket) {
+    public LibraryView(Library library,Socket socket,ObjectOutputStream output,ObjectInputStream input ) {
+        this.output=output;
+        this.input=input;
         // Initialize frame
         this.socket=socket;
         frame = new JFrame("Client Library");
@@ -166,7 +170,11 @@ public class LibraryView extends JFrame {
                 songButton.setHorizontalTextPosition(JButton.CENTER);
                 songButton.setVerticalTextPosition(JButton.BOTTOM);
                 songButton.setSocket(this.socket);
+                songButton.setOutput(this.output);
+                songButton.setInput(this.input);
                 imagePanel.add(songButton);
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -206,7 +214,7 @@ public class LibraryView extends JFrame {
             dummyLibrary.addSong(song3);
 
             SwingUtilities.invokeLater(() -> {
-                new LibraryView(dummyLibrary,null);
+                new LibraryView(dummyLibrary,null,null,null);
             });
         } catch (IOException e) {
             e.printStackTrace();

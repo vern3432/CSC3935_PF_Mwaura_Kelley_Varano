@@ -34,12 +34,12 @@ public class Client  {
             Library dummyLibrary= new Library();
             dummyLibrary.deserialize(JsonIO.readObject(library1));
             SwingUtilities.invokeLater(() -> {
-                new LibraryView(dummyLibrary, socket);
+                new LibraryView(dummyLibrary, socket,output,input);
             });
             // Do not close the socket here
 
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Client exception: " + e.getMessage());
+            System.out.println("Client excenvalid type code: ACption: " + e.getMessage());
             e.printStackTrace();
         }
     }

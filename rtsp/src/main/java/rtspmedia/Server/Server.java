@@ -90,28 +90,34 @@ public class Server {
                 ensureLibraryFileExists();
                 output.writeObject(Server.library.serialize());
                 output.flush();
-                
-                String request = "";
-                while (!request.contains("Directory:")) {
-                    request = (String) input.readObject();
-                }
-                if (request.contains("Directory:")) {
-                    System.out.println("Dir:"+request);
-                    request = request.replace("Directory:", "");
-                    RTPServer rtpserver = new RTPServer();
-                    int port = rtpserver.getRTP_PORT();
-                    output.writeObject(port);
+                output.reset(); // Reset the stream after sending
+        
+                // Wait for a message from the client
+                Object message = input.readObject();
+                if (message instanceof String && ((String) message).contains("Directory:")) {
+                    System.out.println("Client says: " + message);
+                    String request = (String)message;
+                    RTPServer rtpserver = new RTPServer(request);
+                    int port = rtpserver.getRTP_PORT();;
+                    // Send a response back to the client
+                    output.writeObject(Integer.toString(port));
                     output.flush();
-                    rtpserver.start();
+                    output.reset(); // Reset the stream after sending
                 }
-
-            } catch (IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 System.out.println("Error handling client: " + e.getMessage());
-            } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } finally {
+                try {
+                    if (socket != null) {
+                        socket.close();
+                    }
+                } catch (IOException e) {
+                    System.out.println("Error closing client socket: " + e.getMessage());
+                }
             }
         }
+        
+        
     }
 
     private static void ensureLibraryFileExists() {
