@@ -103,6 +103,7 @@ public class Server {
                     output.writeObject(Integer.toString(port));
                     output.flush();
                     output.reset(); // Reset the stream after sending
+                    rtpserver.start();
                 }
             } catch (IOException | ClassNotFoundException e) {
                 System.out.println("Error handling client: " + e.getMessage());

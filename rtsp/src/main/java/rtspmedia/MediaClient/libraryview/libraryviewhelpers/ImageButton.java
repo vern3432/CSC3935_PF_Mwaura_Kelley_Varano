@@ -117,14 +117,12 @@ public class ImageButton extends JButton implements ActionListener {
                 int convertedValue = Integer.parseInt(message);
                 try {
                     RTPClient client = new RTPClient(convertedValue);
-                    client.startReceiving();
                 } catch (SocketException | UnknownHostException | LineUnavailableException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
                 try {
                     RTPClient client = new RTPClient(convertedValue);
-                    client.startReceiving();
                 } catch (SocketException | UnknownHostException | LineUnavailableException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
