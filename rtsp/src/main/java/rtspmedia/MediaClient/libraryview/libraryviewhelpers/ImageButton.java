@@ -1,5 +1,6 @@
 package rtspmedia.MediaClient.libraryview.libraryviewhelpers;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 
@@ -8,12 +9,16 @@ import rtspmedia.rtp.RTPClient;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Base64;
+import rtspmedia.MediaClient.libraryview.libraryviewhelpers.*;
 
 public class ImageButton extends JButton implements ActionListener {
     private String imagePath;
@@ -22,6 +27,27 @@ public class ImageButton extends JButton implements ActionListener {
     public ObjectInputStream input;
     public ObjectOutputStream output;
     public long length;
+    private BufferedImage bufferedImage;
+    private String songTitle;
+    private Image unsized;
+    Image resizedImg;
+
+    public BufferedImage getBufferedImage() {
+        return bufferedImage;
+    }
+
+    public void setBufferedImage(BufferedImage bufferedImage) {
+        this.bufferedImage = bufferedImage;
+    }
+
+    public String getSongTitle() {
+        return songTitle;
+    }
+
+    public void setSongTitle(String songTitle) {
+        this.songTitle = songTitle;
+    }
+
     public long getLength() {
         return length;
     }
@@ -61,7 +87,8 @@ public class ImageButton extends JButton implements ActionListener {
         this.buttonText = buttonText;
         ImageIcon icon = new ImageIcon(imagePath);
         Image img = icon.getImage();
-        Image resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize image to 100x100 pixels
+        this.unsized=img;
+        this.resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize image to 100x100 pixels
         this.setIcon(new ImageIcon(resizedImg));
 
         this.setText(buttonText);
@@ -79,9 +106,10 @@ public class ImageButton extends JButton implements ActionListener {
         System.out.println(fileLocation);
         ImageIcon icon = image;
         Image img = icon.getImage();
-        Image resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize image to 100x100 pixels
+        this.unsized=img;
+        this.songTitle=buttonText;
+        this.resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize image to 100x100 pixels
         this.setIcon(new ImageIcon(resizedImg));
-
         this.setText(buttonText);
         this.setHorizontalTextPosition(JButton.CENTER);
         this.setVerticalTextPosition(JButton.BOTTOM);
@@ -111,6 +139,34 @@ public class ImageButton extends JButton implements ActionListener {
         super.paintComponent(g2);
         g2.dispose();
     }
+    public static String encodeToString(Image image) {
+        System.out.println(image.toString());
+        String imageString = null;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        try {
+            // Create a buffered image with transparency
+            BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+            // Draw the image on to the buffered image
+            bufferedImage.getGraphics().drawImage(image, 0, 0, null);
+
+            // Write the image to a byte array output stream
+            ImageIO.write(bufferedImage, "jpg", bos); // Default type set to "jpg"
+            byte[] imageBytes = bos.toByteArray();
+
+            // Base64 encode the byte array
+            imageString = Base64.getEncoder().encodeToString(imageBytes);
+
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return imageString;
+    }
+    public  Image resizeImage(Image originalImage) {
+        return originalImage.getScaledInstance(400, 400, Image.SCALE_SMOOTH);
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -125,7 +181,7 @@ public class ImageButton extends JButton implements ActionListener {
                 System.out.println("Received from server: " + message);
                 int convertedValue = Integer.parseInt(message);
                 try {
-                    RTPClient client = new RTPClient(convertedValue);
+                    RTPClient client = new RTPClient(convertedValue, length, new ImageConverter().encodeImageToBase64(resizedImg), this.songTitle);
                 } catch (SocketException | UnknownHostException | LineUnavailableException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();

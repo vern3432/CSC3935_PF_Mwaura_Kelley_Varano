@@ -7,17 +7,16 @@ Final Project for CSC3935: Moses Mwaura, Aidan Varano, Sean Kelley
 
 Todo:
 
-1. Fix Ability for Multiple RTP streams to be opened, broken RN.  
+1. ~~Fix Ability for Multiple RTP streams to be opened, broken RN.~~  
 2. Implement RTCP(If we feel its needed)
-2.  Make song legnth send in json and update to RTPCLIENT for progress bar caclualtion (Hardcoded rn), make it auto close the player when this works
+2.  ~~Make song legnth send in json and update to RTPCLIENT for progress bar caclualtion (Hardcoded rn), make it auto close the player when this works~~   
 3. Make sure proccess of LibraryView doenst close when RTP Client Does  
-4. Impliment mp3 conversion proccess in the case of an mp3 file uploaded 
+4. ~~Impliment mp3 conversion proccess in the case of an mp3 file uploaded~~  
 5. Decide whether to use relative or hard paths in json. (Its hard rn)
 6. Properly Impliment Pause feature(It stops it but does not let it resume)
 7. Make it so that once a song is done or closed, a new RTP stream cna be init
 8. Add Album Covers to Audio Player
 9. Add Song Title to Audio Player 
-
 
 
 

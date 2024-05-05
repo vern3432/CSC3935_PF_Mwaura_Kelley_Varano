@@ -2,9 +2,11 @@ package rtspmedia.rtp;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import javax.swing.*;
@@ -14,6 +16,8 @@ public class RTPClient {
     private JFrame frame;
     private JButton playButton;
     private JProgressBar progressBar;
+    private JLabel albumCoverLabel;
+    private JLabel songTitleLabel;
     private boolean isPlaying = false;
     private SourceDataLine line;
     private DatagramSocket socket;
@@ -37,6 +41,8 @@ public class RTPClient {
         serverAddress = InetAddress.getByName("localhost");
         initializeAudio();
         initializeGUI();
+        setAlbumCover(null); // Set default album cover
+        setSongTitle(null); // Set default song title
     }
 
     public RTPClient(int port ) throws LineUnavailableException, SocketException, UnknownHostException {
@@ -45,6 +51,8 @@ public class RTPClient {
         serverAddress = InetAddress.getByName("localhost");
         initializeAudio();
         initializeGUI();
+        setAlbumCover(null); // Set default album cover
+        setSongTitle(null); // Set default song title
     }
 
     public RTPClient(int port,long length ) throws LineUnavailableException, SocketException, UnknownHostException {
@@ -54,6 +62,25 @@ public class RTPClient {
         serverAddress = InetAddress.getByName("localhost");
         initializeAudio();
         initializeGUI();
+        setAlbumCover(null); // Set default album cover
+        setSongTitle(null); // Set default song title
+    }
+
+
+    public RTPClient(int port,long length,String image,String title ) throws LineUnavailableException, SocketException, UnknownHostException {
+        this.albumCoverLabel=new JLabel();
+        this.songTitleLabel = new JLabel();
+        this.totalDuration=length;
+        this.serverPort=port;
+        System.out.println("image:"+image);
+        this.setAlbumCover(image);
+        this.setSongTitle(title);
+
+        socket = new DatagramSocket();
+        serverAddress = InetAddress.getByName("localhost");
+        initializeAudio();
+        initializeGUI();
+
     }
 
     private void initializeGUI() {
@@ -62,6 +89,8 @@ public class RTPClient {
         progressBar = new JProgressBar(0, 100); // Max 100 for percentage
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
+        frame.getContentPane().add(albumCoverLabel, BorderLayout.WEST);
+        frame.getContentPane().add(songTitleLabel, BorderLayout.SOUTH);
 
         playButton.addActionListener(e -> {
             if (isPlaying) {
@@ -80,7 +109,7 @@ public class RTPClient {
 
         frame.getContentPane().add(playButton, BorderLayout.NORTH);
         frame.getContentPane().add(progressBar, BorderLayout.CENTER);
-        frame.setSize(300, 100);
+        frame.setSize(400, 400); // Set the frame size to three times the length and twice the width
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
@@ -151,6 +180,27 @@ public class RTPClient {
         if (receiveThread != null) {
             receiveThread.interrupt();
         }
+    }
+
+    public void setAlbumCover(String base64Image) {
+        if (base64Image == null) {
+            InputStream is = getClass().getResourceAsStream("/images/placeholder.jpg");
+            try {
+                byte[] imageBytes = is.readAllBytes();
+                base64Image = Base64.getEncoder().encodeToString(imageBytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ImageIcon icon = new ImageIcon(Base64.getDecoder().decode(base64Image));
+        albumCoverLabel.setIcon(icon);
+    }
+
+    public void setSongTitle(String title) {
+        if (title == null) {
+            title = "Placeholder Title";
+        }
+        songTitleLabel.setText(title);
     }
 
     public static void main(String[] args) {
