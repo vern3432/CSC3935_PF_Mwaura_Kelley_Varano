@@ -15,8 +15,8 @@ Todo:
 5. Decide whether to use relative or hard paths in json. (Its hard rn)
 6. Properly Impliment Pause feature(It stops it but does not let it resume)
 7. Make it so that once a song is done or closed, a new RTP stream cna be init
-8. Add Album Covers to Audio Player
-9. Add Song Title to Audio Player 
+8.  ~~Add Album Covers to Audio Player.~~
+9. ~~Add Song Title to Audio Player.~~
 
 
 
