@@ -8,31 +8,24 @@ import java.io.IOException;
 public class AudioConverter {
 
     public static void convertToWav(String inputFilePath, String outputFilePath)
-            throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+            throws UnsupportedAudioFileException, IOException {
         File inputFile = new File(inputFilePath);
-
-        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(inputFile);
-
-        AudioFormat inputFormat = audioInputStream.getFormat();
-
-        AudioFormat outputFormat = new AudioFormat(
-            AudioFormat.Encoding.PCM_SIGNED,
-            48000.0f,       // sample rate
-            16,             // bit depth
-            2,              // channels
-            4,              // frame size
-            48000.0f,       // frame rate
-            false           // little-endian (false for big-endian)
-        );
-
-        AudioInputStream convertedInputStream = AudioSystem.getAudioInputStream(outputFormat, audioInputStream);
-
-        File outputFile = new File(outputFilePath);
-
-        AudioSystem.write(convertedInputStream, AudioFileFormat.Type.WAVE, outputFile);
-
-        audioInputStream.close();
-        convertedInputStream.close();
+        try (AudioInputStream mp3AudioStream = AudioSystem.getAudioInputStream(inputFile)) {
+            AudioFormat sourceFormat = mp3AudioStream.getFormat();
+            AudioFormat pcmFormat = new AudioFormat(
+                AudioFormat.Encoding.PCM_SIGNED,
+                sourceFormat.getSampleRate(),
+                16,
+                sourceFormat.getChannels(),
+                sourceFormat.getChannels() * 2,
+                sourceFormat.getSampleRate(),
+                false
+            );
+            try (AudioInputStream pcmAudioStream = AudioSystem.getAudioInputStream(pcmFormat, mp3AudioStream)) {
+                File outputFile = new File(outputFilePath);
+                AudioSystem.write(pcmAudioStream, AudioFileFormat.Type.WAVE, outputFile);
+            }
+        }
     }
 
     public static void main(String[] args) throws LineUnavailableException {
