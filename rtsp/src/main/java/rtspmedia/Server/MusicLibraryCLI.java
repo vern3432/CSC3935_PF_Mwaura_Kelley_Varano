@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -36,8 +37,9 @@ public class MusicLibraryCLI {
      * @param args
      * @throws IOException
      * @throws UnsupportedAudioFileException 
+     * @throws LineUnavailableException 
      */
-    public static void main(String[] args) throws IOException, UnsupportedAudioFileException {
+    public static void main(String[] args) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         if (args.length > 0) {
             libraryFilePath = args[0]; // Allow user to specify a different library file
         }
@@ -100,7 +102,7 @@ public class MusicLibraryCLI {
         scanner.close();
         System.out.println("Exiting Music Library CLI.");
     }
-    public static void addSong(String name) throws IOException, UnsupportedAudioFileException {
+    public static void addSong(String name) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         JFrame frame = new JFrame();
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter songFilter = new FileNameExtensionFilter("Audio Files", "mp3", "wav");
@@ -110,9 +112,19 @@ public class MusicLibraryCLI {
 
         int songResult = fileChooser.showOpenDialog(frame);
         if (songResult == JFileChooser.APPROVE_OPTION) {
-            String songPath = fileChooser.getSelectedFile().getAbsolutePath();
+            File selectedFile = fileChooser.getSelectedFile();
+            String filePath = selectedFile.getAbsolutePath();
+            String extension = filePath.substring(filePath.lastIndexOf(".") + 1);
+            String wavFilePath = filePath.substring(0, filePath.lastIndexOf(".")) + ".wav";
+
+            if (extension.equals("mp3")) {
+                // Convert MP3 to WAV
+                AudioConverter.convertToWav(filePath, wavFilePath);
+                filePath = wavFilePath; // Update file path to the converted WAV file
+            }
+
             // Calculate the length of the song in milliseconds
-            File audioFile = new File(songPath);
+            File audioFile = new File(filePath);
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
             AudioFormat format = audioStream.getFormat();
             long frames = audioStream.getFrameLength();
@@ -134,7 +146,7 @@ public class MusicLibraryCLI {
                 byte[] imageBytes = baos.toByteArray();
                 String base64Image = Base64.getEncoder().encodeToString(imageBytes);
                 // File imgFile = new File(imagePath);
-                library.addSong(new Song(name, base64Image, songPath,Integer.toString(durationInMilliSeconds)));
+                library.addSong(new Song(name, base64Image, filePath, Integer.toString(durationInMilliSeconds)));
                 saveLibraryToFile(library, libraryFilePath);
             } else {
                 System.out.println("No image selected or operation cancelled.");
