@@ -72,7 +72,6 @@ public class RTPClient {
         this.songTitleLabel = new JLabel();
         this.totalDuration=length;
         this.serverPort=port;
-        System.out.println("image:"+image);
         this.setAlbumCover(image);
         this.setSongTitle(title);
 
