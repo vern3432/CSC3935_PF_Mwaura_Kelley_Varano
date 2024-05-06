@@ -17,7 +17,9 @@ Todo:
 7. Make it so that once a song is done or closed, a new RTP stream cna be init
 8.  ~~Add Album Covers to Audio Player.~~
 9. ~~Add Song Title to Audio Player.~~
-10. Create config files for Server and Client Objects. - In Progress by Sean (One client file left)
+9. ~~Create Config Files for Client and Server Objects.~~
+10. Finish Presentation - in progress by Sean
+11. Finish Documentation - in progress by Sean
 
 
 
