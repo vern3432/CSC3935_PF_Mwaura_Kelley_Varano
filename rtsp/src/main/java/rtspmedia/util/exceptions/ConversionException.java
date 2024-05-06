@@ -1,4 +1,4 @@
-package rtspmedia.Server;
+package rtspmedia.util.exceptions;
 
 public class ConversionException extends RuntimeException {
 	public ConversionException(Throwable cause) {

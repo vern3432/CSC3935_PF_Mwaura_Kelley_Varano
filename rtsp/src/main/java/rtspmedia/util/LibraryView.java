@@ -1,6 +1,5 @@
-package rtspmedia.MediaClient.libraryview.libraryviewhelpers;
+package rtspmedia.util;
 
-import javax.sound.sampled.LineUnavailableException;
 import javax.swing.*;
 
 import java.awt.*;
@@ -11,20 +10,10 @@ import java.awt.event.ActionEvent;
 import java.util.Base64;
 import java.io.ObjectInputStream;
 
-import rtspmedia.Server.LibraryMangement.Library;
-import rtspmedia.Server.LibraryMangement.Song;
-import rtspmedia.rtp.RTPClient;
-import rtspmedia.rtp.RTPServer;
-
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.nio.file.Files;
-import java.util.Base64;
 
 public class LibraryView extends JFrame {
     Socket socket;
@@ -34,6 +23,7 @@ public class LibraryView extends JFrame {
     JLabel iconLabel;
     ObjectOutputStream output;
     ObjectInputStream input;
+
     public LibraryView() {
         // Initialize frame
         frame = new JFrame("Client");
@@ -120,11 +110,11 @@ public class LibraryView extends JFrame {
         frame.setVisible(true);
     }
 
-    public LibraryView(Library library,Socket socket,ObjectOutputStream output,ObjectInputStream input ) {
-        this.output=output;
-        this.input=input;
+    public LibraryView(Library library, Socket socket, ObjectOutputStream output, ObjectInputStream input) {
+        this.output = output;
+        this.input = input;
         // Initialize frame
-        this.socket=socket;
+        this.socket = socket;
         frame = new JFrame("Client Library");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.BLACK);
@@ -172,11 +162,10 @@ public class LibraryView extends JFrame {
                 songButton.setSocket(this.socket);
                 songButton.setOutput(this.output);
                 songButton.setInput(this.input);
-                System.out.println("Determined Length:"+ song.getLength());
+                System.out.println("Determined Length:" + song.getLength());
                 songButton.setLength(Long.valueOf(Integer.parseInt(song.getLength())));
                 // songButton.setLength();
                 imagePanel.add(songButton);
-
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -217,7 +206,7 @@ public class LibraryView extends JFrame {
             dummyLibrary.addSong(song3);
 
             SwingUtilities.invokeLater(() -> {
-                new LibraryView(dummyLibrary,null,null,null);
+                new LibraryView(dummyLibrary, null, null, null);
             });
         } catch (IOException e) {
             e.printStackTrace();

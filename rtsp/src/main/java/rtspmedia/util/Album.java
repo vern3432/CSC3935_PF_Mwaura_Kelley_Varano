@@ -1,10 +1,9 @@
-package rtspmedia.Server.LibraryMangement;
+package rtspmedia.util;
 
 import java.io.InvalidObjectException;
 import java.util.ArrayList;
 
 import merrimackutil.json.JSONSerializable;
-import merrimackutil.json.JsonIO;
 import merrimackutil.json.types.JSONType;
 import merrimackutil.json.types.JSONArray;
 import merrimackutil.json.types.JSONObject;
@@ -15,8 +14,7 @@ public class Album implements JSONSerializable {
     public Album() {
     }
 
-    
-    /** 
+    /**
      * @param song
      */
     public void addSong(Song song) {
@@ -38,10 +36,9 @@ public class Album implements JSONSerializable {
             for (int i = 0; i < jsonSongs.size(); i++) {
                 JSONObject jsonSong = (JSONObject) jsonSongs.get(i);
                 Song song = new Song(
-                    jsonSong.getString("name"),
-                    jsonSong.getString("albumImage"),
-                    jsonSong.getString("path")
-                );
+                        jsonSong.getString("name"),
+                        jsonSong.getString("albumImage"),
+                        jsonSong.getString("path"));
                 songs.add(song);
             }
         }

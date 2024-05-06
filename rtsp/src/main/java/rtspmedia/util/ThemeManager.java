@@ -1,4 +1,4 @@
-package rtspmedia.MediaClient.libraryview.libraryviewhelpers;
+package rtspmedia.util;
 
 import java.awt.Color;
 import javax.swing.*;
@@ -17,8 +17,7 @@ public class ThemeManager {
         }
     }
 
-    
-    /** 
+    /**
      * @param frame
      * @param panels
      */

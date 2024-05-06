@@ -1,4 +1,4 @@
-package rtspmedia.Server.LibraryMangement;
+package rtspmedia.util;
 
 import java.io.InvalidObjectException;
 import java.util.Base64;
@@ -10,12 +10,14 @@ import merrimackutil.json.types.JSONObject;
 public class Song implements JSONSerializable {
     private String name;
     private String length; // Length of the song in miliseconds
-    /** 
+
+    /**
      * @return String
      */
     public String getName() {
         return name;
     }
+
     public String getLength() {
         return length;
     }
@@ -23,7 +25,8 @@ public class Song implements JSONSerializable {
     public void setLength(String length) {
         this.length = length;
     }
-    /** 
+
+    /**
      * @param name
      */
 
@@ -55,6 +58,7 @@ public class Song implements JSONSerializable {
         this.albumImage = albumImage;
         this.path = path;
     }
+
     public Song(String name, String albumImage, String path, String length) {
         this.length = length;
         this.name = name;
@@ -85,7 +89,7 @@ public class Song implements JSONSerializable {
         jsonObj.put("name", name);
         jsonObj.put("albumImage", albumImage);
         jsonObj.put("path", path);
-        jsonObj.put("length", length);  // Include the length attribute in the JSON object
+        jsonObj.put("length", length); // Include the length attribute in the JSON object
         return jsonObj;
     }
 }

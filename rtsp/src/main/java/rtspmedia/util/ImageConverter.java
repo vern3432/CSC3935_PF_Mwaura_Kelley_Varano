@@ -1,4 +1,4 @@
-package rtspmedia.MediaClient.libraryview.libraryviewhelpers;
+package rtspmedia.util;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -25,7 +25,8 @@ public class ImageConverter {
         }
 
         // Create a buffered image with transparency
-        BufferedImage bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        BufferedImage bimage = new BufferedImage(image.getWidth(null), image.getHeight(null),
+                BufferedImage.TYPE_INT_ARGB);
 
         // Draw the image on to the buffered image
         Graphics2D bGr = bimage.createGraphics();

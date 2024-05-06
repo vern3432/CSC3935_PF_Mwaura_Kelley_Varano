@@ -1,4 +1,4 @@
-package rtspmedia.Server.LibraryMangement;
+package rtspmedia.util;
 
 import java.io.InvalidObjectException;
 import java.util.ArrayList;
@@ -16,8 +16,7 @@ public class Library implements JSONSerializable {
     public Library() {
     }
 
-    
-    /** 
+    /**
      * @param song
      */
     public void addSong(Song song) {

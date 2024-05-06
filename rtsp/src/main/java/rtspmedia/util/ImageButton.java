@@ -1,4 +1,4 @@
-package rtspmedia.MediaClient.libraryview.libraryviewhelpers;
+package rtspmedia.util;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.LineUnavailableException;
@@ -18,7 +18,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Base64;
-import rtspmedia.MediaClient.libraryview.libraryviewhelpers.*;
 
 public class ImageButton extends JButton implements ActionListener {
     private String imagePath;
@@ -87,7 +86,7 @@ public class ImageButton extends JButton implements ActionListener {
         this.buttonText = buttonText;
         ImageIcon icon = new ImageIcon(imagePath);
         Image img = icon.getImage();
-        this.unsized=img;
+        this.unsized = img;
         this.resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize image to 100x100 pixels
         this.setIcon(new ImageIcon(resizedImg));
 
@@ -106,8 +105,8 @@ public class ImageButton extends JButton implements ActionListener {
         System.out.println(fileLocation);
         ImageIcon icon = image;
         Image img = icon.getImage();
-        this.unsized=img;
-        this.songTitle=buttonText;
+        this.unsized = img;
+        this.songTitle = buttonText;
         this.resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Resize image to 100x100 pixels
         this.setIcon(new ImageIcon(resizedImg));
         this.setText(buttonText);
@@ -139,6 +138,7 @@ public class ImageButton extends JButton implements ActionListener {
         super.paintComponent(g2);
         g2.dispose();
     }
+
     public static String encodeToString(Image image) {
         System.out.println(image.toString());
         String imageString = null;
@@ -146,7 +146,8 @@ public class ImageButton extends JButton implements ActionListener {
 
         try {
             // Create a buffered image with transparency
-            BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+            BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null),
+                    BufferedImage.TYPE_INT_ARGB);
 
             // Draw the image on to the buffered image
             bufferedImage.getGraphics().drawImage(image, 0, 0, null);
@@ -164,7 +165,8 @@ public class ImageButton extends JButton implements ActionListener {
         }
         return imageString;
     }
-    public  Image resizeImage(Image originalImage) {
+
+    public Image resizeImage(Image originalImage) {
         return originalImage.getScaledInstance(400, 400, Image.SCALE_SMOOTH);
     }
 
@@ -172,28 +174,27 @@ public class ImageButton extends JButton implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         try {
             if (socket != null && !socket.isClosed()) {
-                output.writeObject("Directory:"+this.fileLocation);
+                output.writeObject("Directory:" + this.fileLocation);
                 output.flush();
                 output.reset(); // Reset the stream to avoid caching objects
-    
+
                 // Now, receive a response from the server
                 String message = (String) input.readObject();
                 System.out.println("Received from server: " + message);
                 int convertedValue = Integer.parseInt(message);
                 try {
-                    RTPClient client = new RTPClient(convertedValue, length, new ImageConverter().encodeImageToBase64(resizedImg), this.songTitle);
+                    RTPClient client = new RTPClient(convertedValue, length,
+                            new ImageConverter().encodeImageToBase64(resizedImg), this.songTitle);
                 } catch (SocketException | UnknownHostException | LineUnavailableException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
 
-        
             }
         } catch (IOException | ClassNotFoundException ex) {
             ex.printStackTrace();
             System.out.println("Error communicating with the server: " + ex.getMessage());
         }
     }
-    
-    
+
 }

@@ -1,4 +1,4 @@
-package rtspmedia.Server;
+package rtspmedia.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.sound.sampled.AudioFileFormat.Type;
+
+import rtspmedia.util.exceptions.ConversionException;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -40,8 +43,7 @@ public final class Converter {
 
 	public void to(OutputStream output) {
 		try (
-				final ByteArrayOutputStream rawOutputStream = new ByteArrayOutputStream()
-		) {
+				final ByteArrayOutputStream rawOutputStream = new ByteArrayOutputStream()) {
 			convert(input, rawOutputStream, getTargetFormat());
 
 			final byte[] rawResult = rawOutputStream.toByteArray();
@@ -59,7 +61,7 @@ public final class Converter {
 		try (final ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 			to(output);
 			return output.toByteArray();
-		}  catch (IOException e) {
+		} catch (IOException e) {
 			throw new ConversionException(e);
 		}
 	}
@@ -77,16 +79,15 @@ public final class Converter {
 	private void convert(InputStream input, OutputStream output, AudioFormat targetFormat) throws Exception {
 
 		try (
-				final AudioInputStream rawSourceStream = AudioSystem.getAudioInputStream(input)
-		) {
+				final AudioInputStream rawSourceStream = AudioSystem.getAudioInputStream(input)) {
 			final AudioFormat sourceFormat = rawSourceStream.getFormat();
 			final AudioFormat convertFormat = getAudioFormat(sourceFormat);
 
 			try (
 					final AudioInputStream sourceStream = AudioSystem
 							.getAudioInputStream(convertFormat, rawSourceStream);
-					final AudioInputStream convertStream = AudioSystem.getAudioInputStream(targetFormat, sourceStream);
-			) {
+					final AudioInputStream convertStream = AudioSystem.getAudioInputStream(targetFormat,
+							sourceStream);) {
 				int read;
 				final byte[] buffer = new byte[8192];
 				while ((read = convertStream.read(buffer, 0, buffer.length)) >= 0) {

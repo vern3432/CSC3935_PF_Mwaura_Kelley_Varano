@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Base64;
 import java.util.Scanner;
 
@@ -24,12 +23,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import merrimackutil.json.JsonIO;
-import rtspmedia.MediaClient.libraryview.libraryviewhelpers.LibraryView;
-import rtspmedia.Server.LibraryMangement.Album;
-import rtspmedia.Server.LibraryMangement.Library;
-import rtspmedia.Server.LibraryMangement.Song;
+import rtspmedia.util.Album;
+import rtspmedia.util.AudioConverter;
+import rtspmedia.util.Library;
+import rtspmedia.util.LibraryView;
+import rtspmedia.util.Song;
 
-public class MusicLibraryCLI {
+public class Driver {
     private static String libraryFilePath = "data/library-server-config/library.json"; // Default library file path
     private static Library library; // Library object
 
@@ -190,7 +190,7 @@ public class MusicLibraryCLI {
     }
 
     public static void StartServer() {
-        Server server = new Server(MusicLibraryCLI.libraryFilePath);
+        Server server = new Server(Driver.libraryFilePath);
 
     }
 
