@@ -58,14 +58,12 @@ public class RTCPpacket {
         System.arraycopy(packet, 0, header, 0, HEADER_SIZE);
         System.arraycopy(packet, HEADER_SIZE, body, 0, BODY_SIZE);
 
-        // Parse header fields
         V = (header[0] & 0xFF) >> 6;
         payloadType = header[1] & 0xFF;
         length = (header[3] & 0xFF) + ((header[2] & 0xFF) << 8);
         SSRC = (header[7] & 0xFF) + ((header[6] & 0xFF) << 8) + ((header[5] & 0xFF) << 16) + ((header[4] & 0xFF) << 24);
 
-        // Parse body fields
-        ByteBuffer bb = ByteBuffer.wrap(body); // big-endian by default
+        ByteBuffer bb = ByteBuffer.wrap(body);
         fractionLost = bb.getFloat();
         cumulativeLost = bb.getInt();
         highestSequenceNumber = bb.getInt();
