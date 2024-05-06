@@ -17,25 +17,47 @@ import java.net.Socket;
 import java.io.ObjectInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.SwingUtilities;
 import rtspmedia.MediaClient.libraryview.*;
 import merrimackutil.json.JsonIO;
+import merrimackutil.json.types.JSONObject;
+
 import java.io.InvalidObjectException;
 import java.io.FileReader;
 
 
 public class Server {
-    private static final int PORT = 12345;
-    private static final int MAX_CONNECTIONS = 20; // Maximum number of concurrent connections
+    private static String configFile = "rtsp/src/main/java/rtspmedia/Server/server-config/config.json";
+    private static ServerConfiguration config;
+
+    private static int PORT;
+    private static int MAX_CONNECTIONS; // Maximum number of concurrent connections
     
     private static String libraryFilePath = "library.json"; // Default library file path
     private static  Library library;
     Server(String libraryFilePath){
-        this.libraryFilePath=libraryFilePath;
+        this.libraryFilePath = libraryFilePath;
+
+        try {
+            JSONObject configObj = JsonIO.readObject(new File(configFile));
+            config = new ServerConfiguration(configObj);
+            this.PORT = config.getPort();
+            this.MAX_CONNECTIONS = config.getMaxConnections();
+        } catch (FileNotFoundException e) {
+            System.out.println("Could not find server configuration file.");
+            e.printStackTrace();
+        } catch (InvalidObjectException e) {
+            System.out.println("Invalid json object for Server configuration");
+            e.printStackTrace();
+        }
+
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            
             System.out.println("Server is listening on port " + PORT);
+            this.MAX_CONNECTIONS = config.getMaxConnections();
             int connectionCount = 0;
 
             while (connectionCount < MAX_CONNECTIONS) { // Limit the number of concurrent connections
@@ -56,8 +78,21 @@ public class Server {
      * @param args
      */
     public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Server is listening on port " + PORT);
+
+        try {
+            JSONObject configObj = JsonIO.readObject(new File(configFile));
+            config = new ServerConfiguration(configObj);
+        } catch (FileNotFoundException e) {
+            System.out.println("Could not find server configuration file.");
+            e.printStackTrace();
+        } catch (InvalidObjectException e) {
+            System.out.println("Invalid json object for Server configuration");
+            e.printStackTrace();
+        }
+        
+
+        try (ServerSocket serverSocket = new ServerSocket(config.getPort())) {
+            System.out.println("Server is listening on port " + config.getPort());
             int connectionCount = 0;
 
             while (connectionCount < MAX_CONNECTIONS) { // Limit the number of concurrent connections
