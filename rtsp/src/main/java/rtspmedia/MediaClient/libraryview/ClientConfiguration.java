@@ -1,4 +1,4 @@
-package rtspmedia.MediaClient.libraryview.clientConfig;
+package rtspmedia.MediaClient.libraryview;
 
 import java.io.InvalidObjectException;
 
