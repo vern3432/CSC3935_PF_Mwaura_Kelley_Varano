@@ -17,6 +17,7 @@ Todo:
 7. Make it so that once a song is done or closed, a new RTP stream cna be init
 8.  ~~Add Album Covers to Audio Player.~~
 9. ~~Add Song Title to Audio Player.~~
+10. Create config files for Server and Client Objects. - In Progress by Sean (One client file left)
 
 
 
@@ -40,7 +41,7 @@ This project involves the development of a music library management system imple
 
 This project combines media management with streaming technology, providing a comprehensive solution for managing and accessing media content efficiently.
 
-# Using the CLI and Client GUI
+# Application Usage
 
 ## CLI Usage
 
@@ -69,8 +70,19 @@ To launch the GUI, run the `LibraryView.java` from the client side after startin
 
 Both interfaces are designed to be intuitive, allowing easy management and access to your music library.
 
+## Configuration for Server and Client Objects
 
+Each Server and Client and has it's own Configuration object, and json file associated with it. In order to use your own parameters for these objects, you can use the already existing files, or add your own files that adhere to the required format.
 
+All formats are described in the javadocs of each respective Configuration object.
+
+# Challenges and and Considerations, Future Enhancements, and Conclusions
+
+## Challenges and Considerations
+
+- **Handling Large Files**: Managing large media files and ensuring efficient transmission over the network can be challenging. Implementing streaming protocols effectively addresses this.
+- **User Interface**: While the current CLI provides basic functionality, future versions could include a graphical user interface (GUI) for enhanced user experience.
+- **Security**: As the system involves file handling and network communication, ensuring data security and preventing unauthorized access is crucial.
 
 ## Future Enhancements
 
@@ -79,13 +91,6 @@ Both interfaces are designed to be intuitive, allowing easy management and acces
 - **MP3 Conversion Process**: Implement a process to handle the conversion of different audio file formats to MP3, ensuring compatibility across various devices and platforms.
 - **Path Handling**: Decide on using either relative or absolute paths in the JSON storage format to optimize portability and ease of configuration.
 - **Pause and Resume Feature**: Properly implement the pause feature to allow pausing and resuming of song playback, improving user interaction with the media player.
-
-
-## Challenges and Considerations
-
-- **Handling Large Files**: Managing large media files and ensuring efficient transmission over the network can be challenging. Implementing streaming protocols effectively addresses this.
-- **User Interface**: While the current CLI provides basic functionality, future versions could include a graphical user interface (GUI) for enhanced user experience.
-- **Security**: As the system involves file handling and network communication, ensuring data security and preventing unauthorized access is crucial.
 
 ## Conclusion
 
