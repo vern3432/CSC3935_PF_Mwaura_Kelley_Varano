@@ -6,7 +6,6 @@ import java.io.ObjectOutputStream;
 import java.io.IOException;
 import rtspmedia.Server.LibraryMangement.*;
 import rtspmedia.rtp.RTPServer;
-import rtspmedia.Server.serverConfig.ServerConfiguration;
 
 import java.net.Socket;
 import java.io.ObjectInputStream;
@@ -29,17 +28,17 @@ import merrimackutil.json.types.JSONObject;
 import java.io.InvalidObjectException;
 import java.io.FileReader;
 
-
 public class Server {
-    private static String configFile = "rtsp/src/main/java/rtspmedia/Server/server-config/config.json";
+    private static String configFile = "data/library-server-config/config.json";
     private static ServerConfiguration config;
 
     private static int PORT;
     private static int MAX_CONNECTIONS; // Maximum number of concurrent connections
-    
-    private static String libraryFilePath = "library.json"; // Default library file path
-    private static  Library library;
-    Server(String libraryFilePath){
+
+    private static String libraryFilePath = "data/library-server-config/library.json"; // Default library file path
+    private static Library library;
+
+    Server(String libraryFilePath) {
         this.libraryFilePath = libraryFilePath;
 
         try {
@@ -56,7 +55,7 @@ public class Server {
         }
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            
+
             System.out.println("Server is listening on port " + PORT);
             this.MAX_CONNECTIONS = config.getMaxConnections();
             int connectionCount = 0;
@@ -64,18 +63,19 @@ public class Server {
             while (connectionCount < MAX_CONNECTIONS) { // Limit the number of concurrent connections
                 Socket socket = serverSocket.accept();
                 ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-                output.flush(); // Flush to ensure the hea/home/linxuser3/Documents/CSC3935_PF_Mwaura_Kelley_Varano-1/er is sent
+                output.flush(); // Flush to ensure the
+                                // hea/home/linxuser3/Documents/CSC3935_PF_Mwaura_Kelley_Varano-1/er is sent
                 ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
                 new Thread(new ClientHandler(socket, input, output)).start();
                 connectionCount++;
             }
-        } catch (IOException e) {                       
+        } catch (IOException e) {
             System.out.println("Server exception: " + e.getMessage());
             e.printStackTrace();
         }
     }
-    
-    /** 
+
+    /**
      * @param args
      */
     public static void main(String[] args) {
@@ -90,7 +90,6 @@ public class Server {
             System.out.println("Invalid json object for Server configuration");
             e.printStackTrace();
         }
-        
 
         try (ServerSocket serverSocket = new ServerSocket(config.getPort())) {
             System.out.println("Server is listening on port " + config.getPort());
@@ -104,7 +103,7 @@ public class Server {
                 new Thread(new ClientHandler(socket, input, output)).start();
                 connectionCount++;
             }
-        } catch (IOException e) {                       
+        } catch (IOException e) {
             System.out.println("Server exception: " + e.getMessage());
             e.printStackTrace();
         }
@@ -127,13 +126,13 @@ public class Server {
                 output.writeObject(Server.library.serialize());
                 output.flush();
                 output.reset(); // Reset the stream after sending
-        
+
                 // Wait for a message from the client
                 Object message = input.readObject();
                 if (message instanceof String && ((String) message).contains("Directory:")) {
                     System.out.println("Client says: " + message);
-                    String request = (String)message;
-                     request = request.replace("Directory:", "");
+                    String request = (String) message;
+                    request = request.replace("Directory:", "");
                     RTPServer rtpserver = new RTPServer(request);
                     int port = rtpserver.getRTP_PORT();
                     // Send a response back to the client
@@ -154,8 +153,7 @@ public class Server {
                 }
             }
         }
-        
-        
+
     }
 
     private static void ensureLibraryFileExists() {
@@ -185,7 +183,7 @@ public class Server {
                 Server.library.deserialize(JsonIO.readObject(jsonString));
             } catch (Exception e) {
                 System.out.println("Error loading the library file: " + e.getMessage());
-                Server.library =  new Library(); // Initialize a new empty Library if there's an error loading
+                Server.library = new Library(); // Initialize a new empty Library if there's an error loading
             }
         }
     }

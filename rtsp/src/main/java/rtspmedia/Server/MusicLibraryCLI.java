@@ -1,4 +1,5 @@
 package rtspmedia.Server;
+
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -29,15 +30,14 @@ import rtspmedia.Server.LibraryMangement.Library;
 import rtspmedia.Server.LibraryMangement.Song;
 
 public class MusicLibraryCLI {
-    private static String libraryFilePath = "library.json"; // Default library file path
+    private static String libraryFilePath = "data/library-server-config/library.json"; // Default library file path
     private static Library library; // Library object
 
-    
-    /** 
+    /**
      * @param args
      * @throws IOException
-     * @throws UnsupportedAudioFileException 
-     * @throws LineUnavailableException 
+     * @throws UnsupportedAudioFileException
+     * @throws LineUnavailableException
      */
     public static void main(String[] args) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         if (args.length > 0) {
@@ -85,7 +85,7 @@ public class MusicLibraryCLI {
                     StartServer();
                     break;
                 case "ViewLibrary":
-                ensureLibraryFileExists();
+                    ensureLibraryFileExists();
 
                     ViewLibrary();
                     break;
@@ -102,13 +102,14 @@ public class MusicLibraryCLI {
         scanner.close();
         System.out.println("Exiting Music Library CLI.");
     }
-    public static void addSong(String name) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+
+    public static void addSong(String name)
+            throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         JFrame frame = new JFrame();
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter songFilter = new FileNameExtensionFilter("Audio Files", "mp3", "wav");
         fileChooser.setFileFilter(songFilter);
         fileChooser.setDialogTitle("Select an Audio file");
-        
 
         int songResult = fileChooser.showOpenDialog(frame);
         if (songResult == JFileChooser.APPROVE_OPTION) {
@@ -128,8 +129,8 @@ public class MusicLibraryCLI {
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
             AudioFormat format = audioStream.getFormat();
             long frames = audioStream.getFrameLength();
-            double durationInSeconds = (frames+0.0) / format.getFrameRate();  
-            int durationInMilliSeconds = (int)(durationInSeconds * 1000);
+            double durationInSeconds = (frames + 0.0) / format.getFrameRate();
+            int durationInMilliSeconds = (int) (durationInSeconds * 1000);
             fileChooser.setDialogTitle("Select an Image for the Album");
             fileChooser.setFileFilter(new FileNameExtensionFilter("Image Files", "jpg", "png"));
 
@@ -156,6 +157,7 @@ public class MusicLibraryCLI {
         }
         frame.dispose();
     }
+
     private static BufferedImage resizeImage(BufferedImage originalImage, int type, int IMG_WIDTH, int IMG_HEIGHT) {
         BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
         Graphics2D g = resizedImage.createGraphics();
@@ -183,27 +185,28 @@ public class MusicLibraryCLI {
 
     public static void ViewLibrary() {
         SwingUtilities.invokeLater(() -> {
-            new LibraryView(library,null,null,null);
+            new LibraryView(library, null, null, null);
         });
     }
 
     public static void StartServer() {
-        Server server=new Server(MusicLibraryCLI.libraryFilePath);
+        Server server = new Server(MusicLibraryCLI.libraryFilePath);
 
-        
     }
 
     private static void printLibrary() {
         System.out.println("Library Contents:");
         System.out.println("Songs:");
         for (Song song : library.getSongs()) {
-            System.out.println("Name: " + song.getName() + ", Album Image: " + song.getAlbumImage() + ", Path: " + song.getPath() + ", Length: " + "song.ser() "+ " ms");
+            System.out.println("Name: " + song.getName() + ", Album Image: " + song.getAlbumImage() + ", Path: "
+                    + song.getPath() + ", Length: " + "song.ser() " + " ms");
         }
         System.out.println("Albums:");
         for (Album album : library.getAlbums()) {
             System.out.println("Album:");
             for (Song song : album.getSongs()) {
-                System.out.println("  Song: " + song.getName() + ", Album Image: " + song.getAlbumImage() + ", Path: " + song.getPath() + ", Length: " + "getInt" + " ms");
+                System.out.println("  Song: " + song.getName() + ", Album Image: " + song.getAlbumImage() + ", Path: "
+                        + song.getPath() + ", Length: " + "getInt" + " ms");
             }
         }
     }

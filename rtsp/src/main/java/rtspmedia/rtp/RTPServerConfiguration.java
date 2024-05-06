@@ -1,4 +1,4 @@
-package rtspmedia.rtp.rtpServerConfig;
+package rtspmedia.rtp;
 
 import java.io.InvalidObjectException;
 

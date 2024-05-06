@@ -6,12 +6,11 @@ import javax.sound.sampled.*;
 
 import merrimackutil.json.JsonIO;
 import merrimackutil.json.types.JSONObject;
-import rtspmedia.rtp.rtpServerConfig.RTPServerConfiguration;
 
 public class RTPServer {
     public int RTP_PORT;
     private DatagramSocket socket;
-    private static String configFile = "rtsp/src/main/java/rtspmedia/rtp/rtpServerConfig/config.json";
+    private static String configFile = "data/rtp-server-config/config.json";
     private static RTPServerConfiguration config;
     private InetAddress clientIP;
     private int clientPort;
@@ -19,8 +18,7 @@ public class RTPServer {
     private byte[] buffer = new byte[4096];
     File audioFile;
 
-    
-    /** 
+    /**
      * @return File
      */
     public File getAudioFile() {
@@ -60,10 +58,11 @@ public class RTPServer {
             System.out.println("Invalid json object for Server configuration");
             e.printStackTrace();
         }
-        this.audioFile=new File(filepathString);
+        this.audioFile = new File(filepathString);
         this.socket = new DatagramSocket(RTP_PORT);
 
     }
+
     public int getRTP_PORT() {
         return RTP_PORT;
     }
@@ -130,6 +129,7 @@ public class RTPServer {
             }
         }
     }
+
     public int setAvailablePort() {
         ServerSocket serverSocket = null;
         try {
