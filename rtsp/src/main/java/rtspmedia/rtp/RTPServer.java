@@ -10,7 +10,6 @@ import merrimackutil.json.types.JSONObject;
 public class RTPServer {
     public int RTP_PORT;
     private DatagramSocket socket;
-    private static String configFile = "data/rtp-server-config/config.json";
     private static RTPServerConfiguration config;
     private InetAddress clientIP;
     private int clientPort;
@@ -30,34 +29,14 @@ public class RTPServer {
     }
 
     public RTPServer() throws SocketException {
-        try {
-            JSONObject configObj = JsonIO.readObject(new File(configFile));
-            config = new RTPServerConfiguration(configObj);
-            this.RTP_PORT = config.getPort();
-        } catch (FileNotFoundException e) {
-            System.out.println("Could not find server configuration file.");
-            e.printStackTrace();
-        } catch (InvalidObjectException e) {
-            System.out.println("Invalid json object for Server configuration");
-            e.printStackTrace();
-        }
+        this.RTP_PORT = setAvailablePort();
         this.socket = new DatagramSocket(RTP_PORT);
         audioFile = new File("SampleAudio/YoullFindaWay.wav");
 
     }
 
     public RTPServer(String filepathString) throws SocketException {
-        try {
-            JSONObject configObj = JsonIO.readObject(new File(configFile));
-            config = new RTPServerConfiguration(configObj);
-            this.RTP_PORT = config.getPort();
-        } catch (FileNotFoundException e) {
-            System.out.println("Could not find server configuration file.");
-            e.printStackTrace();
-        } catch (InvalidObjectException e) {
-            System.out.println("Invalid json object for Server configuration");
-            e.printStackTrace();
-        }
+        this.RTP_PORT = setAvailablePort();
         this.audioFile = new File(filepathString);
         this.socket = new DatagramSocket(RTP_PORT);
 
