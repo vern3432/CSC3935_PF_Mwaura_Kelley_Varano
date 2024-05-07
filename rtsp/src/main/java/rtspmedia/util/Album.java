@@ -21,6 +21,10 @@ public class Album implements JSONSerializable {
         songs.add(song);
     }
 
+    
+    /** 
+     * @return ArrayList<Song>
+     */
     public ArrayList<Song> getSongs() {
         return songs;
     }

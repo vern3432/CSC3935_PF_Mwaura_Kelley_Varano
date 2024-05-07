@@ -31,6 +31,10 @@ public class ImageButton extends JButton implements ActionListener {
     private Image unsized;
     Image resizedImg;
 
+    
+    /** 
+     * @return BufferedImage
+     */
     public BufferedImage getBufferedImage() {
         return bufferedImage;
     }

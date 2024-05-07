@@ -28,6 +28,11 @@ public final class Converter {
 		this.close = close;
 	}
 
+	
+	/** 
+	 * @param input
+	 * @return Converter
+	 */
 	public static Converter convertFrom(InputStream input) {
 		return new Converter(input, false);
 	}

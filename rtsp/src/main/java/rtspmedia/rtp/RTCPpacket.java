@@ -69,6 +69,11 @@ public class RTCPpacket {
         highestSequenceNumber = bb.getInt();
     }
 
+    
+    /** 
+     * @param packet
+     * @return int
+     */
     public int getpacket(byte[] packet) {
         System.arraycopy(header, 0, packet, 0, HEADER_SIZE);
         System.arraycopy(body, 0, packet, HEADER_SIZE, BODY_SIZE);
