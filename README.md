@@ -2,31 +2,18 @@
 ## CSC3935_PF_Mwaura_Kelley_Varano
 Final Project for CSC3935: Moses Mwaura, Aidan Varano, Sean Kelley
 
-
-
-
-Todo:
-
-1. ~~Fix Ability for Multiple RTP streams to be opened, broken RN.~~  
-2. Implement RTCP(If we feel its needed)
-2.  ~~Make song legnth send in json and update to RTPCLIENT for progress bar caclualtion (Hardcoded rn), make it auto close the player when this works~~   
-3. Make sure proccess of LibraryView doenst close when RTP Client Does  
-4. ~~Impliment mp3 conversion proccess in the case of an mp3 file uploaded~~  
-5. Decide whether to use relative or hard paths in json. (Its hard rn)
-6. Properly Impliment Pause feature(It stops it but does not let it resume)
-7. Make it so that once a song is done or closed, a new RTP stream cna be init
-8.  ~~Add Album Covers to Audio Player.~~
-9. ~~Add Song Title to Audio Player.~~
-9. ~~Create Config Files for Client and Server Objects.~~
-10. ~~Finish Presentation - in progress by Sean~~
-11. Finish Documentation - in progress by Sean
-
-
-
-}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 # Project Overview
 
 This project involves the development of a music library management system implemented in Java. The system allows users to interact with a command-line interface (CLI) to manage songs and albums, view library contents, and start a server for media streaming. The application supports adding songs with associated album images, which are compressed and stored in a Base64 encoded format to optimize storage.
+
+From this CLI Sever, users are able to remotely connect, select songs, and stream Music using the Real Time Protocol over a UDP connection.
+
+
+## Basic Usage:
+To use the application, follow these steps:
+1. **Run the Driver**: Start the application by running `Driver.java`. This will initiate the CLI for server-side operations.
+2. **Start the Server**: Use the `StartServer` command in the CLI to activate the server for handling client connections and media streaming.
+3. **Connect the Client**: After the server is running, launch `Client.java` from a separate terminal to connect to the server and start interacting with the media library through the GUI.
 
 ## Key Features
 
@@ -56,21 +43,25 @@ The Command Line Interface (CLI) allows you to manage the music library and cont
 - **ViewLibrary**: Opens the library view where you can see all songs and albums.
 - **Exit**: Closes the CLI.
 
-To use the CLI, run the `MusicLibraryCLI.java` and enter commands as prompted.
+To use the CLI, run the `Driver.java` and enter commands as prompted.
 
 ## Client GUI Usage
+The Client GUI provides an interactive interface for managing and streaming audio content. Here's how to navigate and use the GUI:
 
-The Client GUI provides a visual interface to interact with the music library:
+### Main Window
+- **Setup Connection**: Establishes a connection to the server for streaming.
+- **Play/Pause Button**: Controls the playback of the streamed audio.
+- **Tear Down**: Disconnects the streaming session.
 
-- **Setup Connection**: Establishes a connection to the server.
-- **Play**: Plays the selected song.
-- **Pause**: Pauses the current song.
-- **Close Connection**: Closes the streaming connection.
-- **Describe Stream**: Provides details about the current stream.
+### Album and Song Information
+- **Album Cover Display**: Shows the album cover of the currently playing song.
+- **Song Title Display**: Indicates the title of the currently playing song.
 
-To launch the GUI, run the `LibraryView.java` from the client side after starting the server from the CLI.
+### Progress and Control
+- **Progress Bar**: Displays the current progress of the song being played.
+- **Volume Control**: Allows adjusting the volume of the playback.
 
-Both interfaces are designed to be intuitive, allowing easy management and access to your music library.
+To launch the GUI, run the `Client.java` from the client side after starting the server from the CLI. The GUI is designed to be user-friendly, providing straightforward options for interacting with the music library and streaming service.
 
 ## Configuration for Server and Client Objects
 
@@ -82,17 +73,6 @@ All formats are described in the javadocs of each respective Configuration objec
 
 ## Challenges and Considerations
 
-- **Handling Large Files**: Managing large media files and ensuring efficient transmission over the network can be challenging. Implementing streaming protocols effectively addresses this.
-- **User Interface**: While the current CLI provides basic functionality, future versions could include a graphical user interface (GUI) for enhanced user experience.
-- **Security**: As the system involves file handling and network communication, ensuring data security and preventing unauthorized access is crucial.
-
-## Future Enhancements
-
-- **Progress Bar for Song Playback**: Implement functionality to send song length in the JSON object to the RTP client for accurate progress bar calculations and automatic player closure upon song completion.
-- **Stability Improvements**: Ensure that the process of `LibraryView` does not terminate when the RTP Client does, enhancing the robustness of the application.
-- **MP3 Conversion Process**: Implement a process to handle the conversion of different audio file formats to MP3, ensuring compatibility across various devices and platforms.
-- **Path Handling**: Decide on using either relative or absolute paths in the JSON storage format to optimize portability and ease of configuration.
-- **Pause and Resume Feature**: Properly implement the pause feature to allow pausing and resuming of song playback, improving user interaction with the media player.
 
 ## Conclusion
 
@@ -100,11 +80,7 @@ This music library management system serves as a robust platform for managing an
 
 
 
-
-
-
-
-The Real-time Transport Protocol (RTP) is primarily used for delivering audio and video over IP networks, such as in streaming media systems, video conferencing, and push-to-talk features. RTP operates on top of the User Datagram Protocol (UDP), providing a way to manage the real-time transmission of multimedia data. Here’s a simplified breakdown of the communication flow in RTP:
+The Real-time Transport Protocol (RTP) is primarily used for delivering audio and video over IP networks, such as in streaming media systems, video conferencing, and push-to-talk features. RTP operates on top of the User Datagram Protocol (UDP), providing a way to manage the real-time transmission of multimedia data. Here's a simplified breakdown of the communication flow in RTP:
 
 Session Initiation: Before RTP packets are exchanged, a session needs to be initiated. This is typically done using the Session Initiation Protocol (SIP) or another signaling protocol which sets up the connection parameters, such as the IP addresses and port numbers for RTP (and RTCP, if used) communication.
 Data Transfer:
@@ -114,18 +90,4 @@ Control and Feedback with RTCP: Alongside RTP, the Real-time Transport Control P
 Media Reconstruction: At the receiver's end, RTP packets are processed as they arrive. The receiver uses the sequence numbers to re-order packets that may have arrived out of order and uses the timestamps to correct improper timing due to network delays.
 Session Termination: The session can be terminated using the control protocols (like SIP) that initiated the session. RTCP can also send BYE packets to end a session when a participant leaves the stream.
 This protocol setup, particularly the use of RTP combined with RTCP over UDP, effectively supports real-time multimedia streaming by managing the timing, order, and delivery of data, despite the inherent unreliability of UDP.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
