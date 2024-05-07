@@ -47,20 +47,27 @@ public class RTPServer {
     }
 
     private void receiveClientConnection() {
-        try {
-            byte[] buf = new byte[1024];
-            DatagramPacket packet = new DatagramPacket(buf, buf.length);
-            socket.receive(packet); // Receive initial connection request
-            String received = new String(packet.getData(), 0, packet.getLength());
-            if (received.trim().equals("Hello, Server!")) {
-                clientIP = packet.getAddress();
-                clientPort = packet.getPort();
-                System.out.println("Client connected: " + clientIP + ":" + clientPort);
+        while (true) { // Continuously listen for new connections
+            try {
+                byte[] buf = new byte[1024];
+                DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                socket.receive(packet);
+                String received = new String(packet.getData(), 0, packet.getLength());
+                if (received.trim().equals("Hello, Server!")) {
+                    clientIP = packet.getAddress();
+                    clientPort = packet.getPort();
+                    System.out.println("Client connected: " + clientIP + ":" + clientPort);
+                    processAudioStream(); // Start or resume sending the audio stream
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                if (socket.isClosed()) {
+                    break; // Break if the socket is closed, possibly restart or handle error
+                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
+    
 
     private void processAudioStream() {
         try {

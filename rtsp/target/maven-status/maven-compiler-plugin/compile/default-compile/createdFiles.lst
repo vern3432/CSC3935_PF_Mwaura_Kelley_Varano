@@ -2,7 +2,9 @@ rtspmedia/MediaClient/libraryview/libraryviewhelpers/ThemeManager.class
 rtspmedia/Server/LibraryMangement/MusicHandler/Mp3ToWavConverter.class
 rtspmedia/Server/Server$ClientHandler.class
 rtspmedia/MediaClient/libraryview/Client.class
+rtspmedia/Server/Converter.class
 rtspmedia/MediaClient/libraryview/libraryviewhelpers/LibraryView$3.class
+rtspmedia/Server/ConversionException.class
 rtspmedia/Server/LibraryMangement/Album.class
 rtspmedia/rtp/RTPpacket.class
 rtspmedia/Server/AudioConverter.class
@@ -16,3 +18,4 @@ rtspmedia/MediaClient/libraryview/libraryviewhelpers/LibraryView.class
 rtspmedia/rtp/RTPClient.class
 rtspmedia/MediaClient/libraryview/libraryviewhelpers/LibraryView$2.class
 rtspmedia/Server/MusicLibraryCLI.class
+rtspmedia/MediaClient/libraryview/libraryviewhelpers/ImageConverter.class
