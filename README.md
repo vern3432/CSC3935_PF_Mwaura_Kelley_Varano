@@ -72,22 +72,3 @@ All formats are described in the javadocs of each respective Configuration objec
 # Challenges and and Considerations, Future Enhancements, and Conclusions
 
 ## Challenges and Considerations
-
-
-## Conclusion
-
-This music library management system serves as a robust platform for managing and streaming media content. With its current features and planned enhancements, it aims to provide a comprehensive tool for media enthusiasts and professionals alike. The integration of advanced features like image compression and media streaming demonstrates the application's capability to handle modern media management challenges effectively.
-
-
-
-The Real-time Transport Protocol (RTP) is primarily used for delivering audio and video over IP networks, such as in streaming media systems, video conferencing, and push-to-talk features. RTP operates on top of the User Datagram Protocol (UDP), providing a way to manage the real-time transmission of multimedia data. Here's a simplified breakdown of the communication flow in RTP:
-
-Session Initiation: Before RTP packets are exchanged, a session needs to be initiated. This is typically done using the Session Initiation Protocol (SIP) or another signaling protocol which sets up the connection parameters, such as the IP addresses and port numbers for RTP (and RTCP, if used) communication.
-Data Transfer:
-RTP Packets: Once the session is established, the sender starts packaging multimedia data into RTP packets. Each RTP packet includes a header and a payload. The header contains information critical for the receiver to properly reconstruct the media stream, such as payload type (identifies the format of the media), sequence number (for packet order), timestamp (for synchronization), and synchronization source identifier (SSRC, which uniquely identifies the stream).
-Transmission: RTP packets are sent over UDP. UDP is chosen because it is lightweight and supports the time-sensitive delivery needed for media streams, even though it does not guarantee delivery.
-Control and Feedback with RTCP: Alongside RTP, the Real-time Transport Control Protocol (RTCP) is often used. RTCP is a companion protocol that allows monitoring of the data delivery and provides minimal control and identification functionalities. It works by periodically sending control packets to participants in a streaming multimedia session. The main functions of RTCP packets include providing feedback on the quality of service (QoS), carrying session control messages, and conveying information about the participants.
-Media Reconstruction: At the receiver's end, RTP packets are processed as they arrive. The receiver uses the sequence numbers to re-order packets that may have arrived out of order and uses the timestamps to correct improper timing due to network delays.
-Session Termination: The session can be terminated using the control protocols (like SIP) that initiated the session. RTCP can also send BYE packets to end a session when a participant leaves the stream.
-This protocol setup, particularly the use of RTP combined with RTCP over UDP, effectively supports real-time multimedia streaming by managing the timing, order, and delivery of data, despite the inherent unreliability of UDP.
-
