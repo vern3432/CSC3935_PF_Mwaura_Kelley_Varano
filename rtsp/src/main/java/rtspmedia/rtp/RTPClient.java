@@ -215,12 +215,9 @@ public class RTPClient {
         if (line != null) {
             line.stop();
             line.flush();
-            line.close();
+            // Only close the line, do not close the socket here
         }
-        if (socket != null && !socket.isClosed()) {
-            socket.close(); // Close the socket to interrupt the receiving thread
-        }
-        receiveThread = null; // Clear the receive thread
+        // Do not set receiveThread to null or close the socket here
     }
     
 
