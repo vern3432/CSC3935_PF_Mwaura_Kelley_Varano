@@ -16,7 +16,9 @@ import merrimackutil.json.types.JSONObject;
 import rtspmedia.Client.ClientConfiguration;
 
 import javax.sound.sampled.*;
-
+/**
+ * The RTPClient class handles the reception and playback of audio data streamed over RTP from a server.
+ */
 public class RTPClient {
     private JFrame frame;
     private JButton playButton;
@@ -35,23 +37,34 @@ public class RTPClient {
     private String configFile = "data/client-config/config.json";
 
     
-    /** 
-     * @return long
+    /**
+     * Retrieves the total duration of the audio stream.
+     * @return The total duration in milliseconds.
      */
     public long getTotalDuration() {
         return totalDuration;
     }
 
     
-    /** 
-     * @param totalDuration
+    /**
+     * Sets the total duration of the audio stream.
+     * @param totalDuration The duration in milliseconds.
      */
     public void setTotalDuration(long totalDuration) {
         this.totalDuration = totalDuration;
     }
 
     private long currentPlaybackTime = 0; // Tracks the current playback time in milliseconds
-
+    /**
+     * Constructor that initializes the client with specific connection parameters.
+     * @param port The port number to connect to the server.
+     * @param length The total duration of the audio stream.
+     * @param image Base64 encoded image for the album cover.
+     * @param title The title of the song.
+     * @throws LineUnavailableException if the system does not support the audio line.
+     * @throws SocketException if there is an error creating the socket.
+     * @throws UnknownHostException if the IP address of the host could not be determined.
+     */
     public RTPClient() throws LineUnavailableException, SocketException, UnknownHostException {
         try {
             configobj = JsonIO.readObject(new File(configFile));
@@ -71,7 +84,14 @@ public class RTPClient {
         setAlbumCover(null); // Set default album cover
         setSongTitle(null); // Set default song title
     }
-
+    /**
+     * Constructor that initializes the client with specific connection parameters but without album cover and title.
+     * @param port The port number to connect to the server.
+     * @param length The total duration of the audio stream.
+     * @throws LineUnavailableException if the system does not support the audio line.
+     * @throws SocketException if there is an error creating the socket.
+     * @throws UnknownHostException if the IP address of the host could not be determined.
+     */
     public RTPClient(int port ) throws LineUnavailableException, SocketException, UnknownHostException {
         try {
             configobj = JsonIO.readObject(new File(configFile));
@@ -141,7 +161,10 @@ public class RTPClient {
         initializeGUI();
 
     }
-
+   /**
+     * Initializes the graphical user interface components for the RTP client.
+     * This includes setting up the frame, buttons, labels, and progress bar.
+     */
     private void initializeGUI() {
         frame = new JFrame("RTP Audio Client");
         playButton = new JButton("Play");
@@ -187,8 +210,9 @@ public class RTPClient {
     }
 
     
-    /** 
-     * @throws LineUnavailableException
+    /**
+     * Initializes the audio system for playback.
+     * @throws LineUnavailableException if the system does not support the audio line.
      */
     private void initializeAudio() throws LineUnavailableException {
         AudioFormat format = new AudioFormat(
@@ -212,7 +236,7 @@ public class RTPClient {
         }
         byte[] message = "Hello, Server!".getBytes();
         DatagramPacket packet = new DatagramPacket(message, message.length, serverAddress, serverPort);
-        socket.send(packet);
+        socket.send(packet); // Send a connection request to the server
         if (!isPlaying) {
             startReceiving();
         }
@@ -238,7 +262,7 @@ public class RTPClient {
                 try {
                     socket.receive(packet);
                     byte[] audioData = Arrays.copyOfRange(packet.getData(), 12, packet.getLength());
-                    line.write(audioData, 0, audioData.length); // Play audio data
+                    line.write(audioData, 0, audioData.length); // Play the received audio data
                     updatePlaybackTime(audioData.length); // Update playback time and progress bar
                 } catch (IOException e) {
                     System.out.println("Error in receiving packet: " + e.getMessage());
@@ -252,7 +276,7 @@ public class RTPClient {
         // Calculate the duration of the audio data in milliseconds
         double duration = (audioDataLength / (double) line.getFormat().getFrameSize()) / line.getFormat().getFrameRate() * 1000;
         currentPlaybackTime += duration;
-        updateProgress(currentPlaybackTime);
+        updateProgress(currentPlaybackTime); // Update the progress bar based on the current playback time
     }
 
     private void updateProgress(long playbackTime) {

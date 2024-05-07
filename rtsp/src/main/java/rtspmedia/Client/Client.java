@@ -11,18 +11,20 @@ import javax.swing.SwingUtilities;
 import merrimackutil.json.JsonIO;
 import java.io.ObjectOutputStream;
 
+/**
+ * The Client class is responsible for establishing a connection to the server and initializing the library view.
+ */
 public class Client {
     private static final String HOST = "localhost";
     private static final int PORT = 12345;
 
     /**
-     * @param args
-     *             /home/linxuser3/DocumSocket"Directory:"ents/CSC3935_PF_Mwaura_Kelley_Varano/SampleAudio/Behind
-     *             Enemy Lines.mp3
+     * The main method that starts the client.
+     * It establishes a socket connection to the server, initializes streams, and sets up the library view.
+     * @param args Command line arguments, not used.
      */
     public static void main(String[] args) {
         try {
-
             Socket socket = new Socket(HOST, PORT);
             ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
             output.flush(); // Flush to ensure the header is sent
@@ -34,9 +36,8 @@ public class Client {
                 new LibraryView(dummyLibrary, socket, output, input);
             });
             // Do not close the socket here
-
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Client excenvalid type code: ACption: " + e.getMessage());
+            System.out.println("Client exception: " + e.getMessage());
             e.printStackTrace();
         }
     }

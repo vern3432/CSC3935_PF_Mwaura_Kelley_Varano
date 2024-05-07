@@ -7,6 +7,9 @@ import javax.sound.sampled.*;
 import merrimackutil.json.JsonIO;
 import merrimackutil.json.types.JSONObject;
 
+/**
+ * The RTPServer class handles the setup and streaming of audio data over RTP to a client.
+ */
 public class RTPServer {
     public int RTP_PORT;
     private DatagramSocket socket;
@@ -32,6 +35,10 @@ public class RTPServer {
         this.audioFile = audioFile;
     }
 
+    /**
+     * Default constructor that initializes the server with a default audio file.
+     * @throws SocketException if there is an error creating the socket.
+     */
     public RTPServer() throws SocketException {
         this.RTP_PORT = setAvailablePort();
         this.socket = new DatagramSocket(RTP_PORT);
@@ -39,6 +46,11 @@ public class RTPServer {
 
     }
 
+    /**
+     * Constructor that initializes the server with a specified audio file path.
+     * @param filepathString The path to the audio file to be streamed.
+     * @throws SocketException if there is an error creating the socket.
+     */
     public RTPServer(String filepathString) throws SocketException {
         this.RTP_PORT = setAvailablePort();
         this.audioFile = new File(filepathString);
@@ -46,10 +58,17 @@ public class RTPServer {
 
     }
 
+    /**
+     * Retrieves the RTP port number.
+     * @return the RTP port number.
+     */
     public int getRTP_PORT() {
         return RTP_PORT;
     }
 
+    /**
+     * Starts the server, waits for client connection, and processes the audio stream.
+     */
     public void start() {
         System.out.println("Server is running and waiting for connection...");
         receiveClientConnection();
@@ -81,7 +100,7 @@ public class RTPServer {
 
     private void processAudioStream() {
         try {
-            audioStream = AudioSystem.getAudioInputStream(audioFile);
+            audioStream = AudioSystem.getAudioInputStream(audioFile); // Load the audio file into the stream
             int readBytes;
             int sequenceNumber = 0;
             long timestamp = 0;
@@ -92,11 +111,11 @@ public class RTPServer {
             int bufferSize = 512;
             buffer = new byte[bufferSize];
 
-            while ((readBytes = audioStream.read(buffer)) != -1) {
+            while ((readBytes = audioStream.read(buffer)) != -1) { // Continue reading until end of stream
                 RTPpacket rtpPacket = new RTPpacket(10, sequenceNumber++, timestamp, buffer);
                 byte[] packetBytes = rtpPacket.getPacketBytes();
                 DatagramPacket sendPacket = new DatagramPacket(packetBytes, packetBytes.length, clientIP, clientPort);
-                socket.send(sendPacket);
+                socket.send(sendPacket); // Send the RTP packet to the client
 
                 timestamp += (bufferSize / frameSize) * (1000 / (long) frameRate);
                 Thread.sleep((bufferSize / frameSize) * (1000 / (long) frameRate));
@@ -120,6 +139,10 @@ public class RTPServer {
         }
     }
 
+    /**
+     * Sets an available port for the RTP server.
+     * @return the available port number or -1 if no port could be found.
+     */
     public int setAvailablePort() {
         ServerSocket serverSocket = null;
         try {

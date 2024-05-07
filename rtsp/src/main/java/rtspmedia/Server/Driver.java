@@ -175,7 +175,14 @@ public class Driver {
         g.dispose();
         return resizedImage;
     }
-
+    /**
+     * Adds an album to the library. This method prompts the user to select a directory containing song files.
+     * It supports .mp3 and .wav files. For .mp3 files, it converts them to .wav format before adding.
+     * It also sets the first .jpg image found in the directory as the album image.
+     *
+     * @throws IOException If an I/O error occurs.
+     * @throws UnsupportedAudioFileException If the audio file format is not supported.
+     */
     private static void addAlbum() throws IOException, UnsupportedAudioFileException {
         JFrame frame = new JFrame();
         JFileChooser directoryChooser = new JFileChooser();

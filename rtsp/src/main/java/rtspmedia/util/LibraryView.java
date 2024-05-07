@@ -15,6 +15,12 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+/**
+ * LibraryView provides a graphical user interface to display and interact with
+ * the music library.
+ * It allows users to setup connections, play, pause, and manage the streaming
+ * of songs.
+ */
 public class LibraryView extends JFrame {
     Socket socket;
     JFrame frame;
@@ -24,6 +30,10 @@ public class LibraryView extends JFrame {
     ObjectOutputStream output;
     ObjectInputStream input;
 
+    /**
+     * Constructor initializes the LibraryView by setting up the GUI components and
+     * layout.
+     */
     public LibraryView() {
         // Initialize frame
         frame = new JFrame("Client");
@@ -184,6 +194,10 @@ public class LibraryView extends JFrame {
         frame.setVisible(true);
     }
 
+    /**
+     * Creates and displays the LibraryView with dummy data for testing and
+     * demonstration purposes.
+     */
     public static void createAndShowLibraryViewWithDummyData() {
         Library dummyLibrary = new Library();
         try {
@@ -214,7 +228,10 @@ public class LibraryView extends JFrame {
     }
 
     /**
+     * Main method to run the LibraryView with dummy data.
+     * 
      * @param args
+     * 
      */
     public static void main(String[] args) {
         createAndShowLibraryViewWithDummyData();
