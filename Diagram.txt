@@ -1,0 +1,20 @@
+@startuml
+participant "Client" as Client
+participant "Server" as Server
+participant "RTPServer" as RTPServer
+
+Client -> Server: Connect to Server (TCP)
+Server -> Server: Accept connection
+Server -> Server: Spawn new thread for client
+note right of Server: Thread handles client requests
+
+Client -> Server: Request new RTP stream
+Server -> RTPServer: Create new RTPServer instance
+RTPServer -> RTPServer: Set available UDP port
+RTPServer -> Server: Return new UDP port
+Server -> Client: Send new UDP port
+
+Client -> RTPServer: Establish UDP connection using new port
+RTPServer -> RTPServer: Start streaming audio/video
+
+@enduml
