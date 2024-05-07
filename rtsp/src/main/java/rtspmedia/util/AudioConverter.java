@@ -7,6 +7,13 @@ import java.io.IOException;
 
 public class AudioConverter {
 
+    
+    /** 
+     * @param inputFilePath
+     * @param outputFilePath
+     * @throws UnsupportedAudioFileException
+     * @throws IOException
+     */
     public static void convertToWav(String inputFilePath, String outputFilePath)
             throws UnsupportedAudioFileException, IOException {
         File inputFile = new File(inputFilePath);

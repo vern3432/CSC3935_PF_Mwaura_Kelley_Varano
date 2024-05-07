@@ -18,6 +18,10 @@ public class Song implements JSONSerializable {
         return name;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getLength() {
         return length;
     }

@@ -34,10 +34,18 @@ public class RTPClient {
     private static ClientConfiguration config;
     private String configFile = "data/client-config/config.json";
 
+    
+    /** 
+     * @return long
+     */
     public long getTotalDuration() {
         return totalDuration;
     }
 
+    
+    /** 
+     * @param totalDuration
+     */
     public void setTotalDuration(long totalDuration) {
         this.totalDuration = totalDuration;
     }

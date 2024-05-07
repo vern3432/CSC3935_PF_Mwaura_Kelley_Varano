@@ -47,6 +47,10 @@ public class Mp3ToWavConverter {
         }
     }
 
+    
+    /** 
+     * @param args
+     */
     // Main method (for testing)
     public static void main(String[] args) {
         Mp3ToWavConverter converter = new Mp3ToWavConverter();

@@ -14,6 +14,11 @@ public class RTPServerConfiguration implements JSONSerializable {
         deserialize(cdata);
     }
 
+    
+    /** 
+     * @param obj
+     * @throws InvalidObjectException
+     */
     public void deserialize(JSONType obj) throws InvalidObjectException {
         JSONObject config = null;
 

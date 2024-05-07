@@ -9,6 +9,12 @@ import java.util.Base64;
 
 public class ImageConverter {
 
+    
+    /** 
+     * @param image
+     * @return String
+     * @throws IOException
+     */
     public static String encodeImageToBase64(Image image) throws IOException {
         BufferedImage bufferedImage = toBufferedImage(image);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

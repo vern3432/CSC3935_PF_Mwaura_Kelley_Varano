@@ -24,6 +24,10 @@ public class RTPServer {
         return audioFile;
     }
 
+    
+    /** 
+     * @param audioFile
+     */
     public void setAudioFile(File audioFile) {
         this.audioFile = audioFile;
     }

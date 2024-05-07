@@ -106,6 +106,13 @@ public class Driver {
         System.out.println("Exiting Music Library CLI.");
     }
 
+    
+    /** 
+     * @param name
+     * @throws IOException
+     * @throws UnsupportedAudioFileException
+     * @throws LineUnavailableException
+     */
     public static void addSong(String name)
             throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         JFrame frame = new JFrame();

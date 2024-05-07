@@ -23,6 +23,10 @@ public class Library implements JSONSerializable {
         songs.add(song);
     }
 
+    
+    /** 
+     * @param album
+     */
     public void addAlbum(Album album) {
         albums.add(album);
     }
