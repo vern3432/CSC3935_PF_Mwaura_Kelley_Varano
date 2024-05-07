@@ -68,6 +68,7 @@ public class RTPClient {
 
 
     public RTPClient(int port,long length,String image,String title ) throws LineUnavailableException, SocketException, UnknownHostException {
+        // TODO: Implement Client Configuration here (syllabus asks for this)
         this.albumCoverLabel=new JLabel();
         this.songTitleLabel = new JLabel();
         this.totalDuration=length;
