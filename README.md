@@ -18,7 +18,7 @@ Todo:
 8.  ~~Add Album Covers to Audio Player.~~
 9. ~~Add Song Title to Audio Player.~~
 9. ~~Create Config Files for Client and Server Objects.~~
-10. Finish Presentation - in progress by Sean
+10. ~~Finish Presentation - in progress by Sean~~
 11. Finish Documentation - in progress by Sean
 
 
