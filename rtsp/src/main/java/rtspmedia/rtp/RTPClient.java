@@ -171,8 +171,21 @@ public class RTPClient {
         progressBar = new JProgressBar(0, 100); // Max 100 for percentage
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
+        JButton tearDownButton = new JButton("Tear Down"); // New button for tearing down the connection
         frame.getContentPane().add(albumCoverLabel, BorderLayout.WEST);
         frame.getContentPane().add(songTitleLabel, BorderLayout.SOUTH);
+        frame.getContentPane().add(tearDownButton, BorderLayout.EAST); // Add the tear down button to the GUI
+        tearDownButton.addActionListener(e -> {
+            if (isPlaying) {
+                stop(); // Stop the audio line and set isPlaying to false
+            }
+            if (socket != null && !socket.isClosed()) {
+                socket.close(); // Close the socket
+            }
+            if (receiveThread != null && receiveThread.isAlive()) {
+                receiveThread.interrupt(); // Stop the receiving thread
+            }
+        });
 
         playButton.addActionListener(e -> {
             if (isPlaying) {
@@ -204,6 +217,25 @@ public class RTPClient {
 
         frame.getContentPane().add(playButton, BorderLayout.NORTH);
         frame.getContentPane().add(progressBar, BorderLayout.CENTER);
+
+// Add a new panel for the Tear Down button at the bottom
+JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+bottomPanel.add(tearDownButton);
+frame.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+
+// Define the action for the Tear Down button
+tearDownButton.addActionListener(e -> {
+    if (isPlaying) {
+        stop(); // Stop the audio line and set isPlaying to false
+    }
+    if (socket != null && !socket.isClosed()) {
+        socket.close(); // Close the socket
+    }
+    if (receiveThread != null && receiveThread.isAlive()) {
+        receiveThread.interrupt(); // Stop the receiving thread
+    }
+});
+
         frame.setSize(400, 400); // Set the frame size to three times the length and twice the width
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
