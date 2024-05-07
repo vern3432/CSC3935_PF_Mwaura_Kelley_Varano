@@ -8,7 +8,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
@@ -166,21 +169,42 @@ public class Driver {
         return resizedImage;
     }
 
-    private static void addAlbum() {
+    private static void addAlbum() throws IOException, UnsupportedAudioFileException {
         JFrame frame = new JFrame();
         JFileChooser directoryChooser = new JFileChooser();
         directoryChooser.setDialogTitle("Select an Album Directory");
-        directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); // Set to choose only directories
-
+        directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int result = directoryChooser.showOpenDialog(frame);
         if (result == JFileChooser.APPROVE_OPTION) {
-            String selectedDirectoryPath = directoryChooser.getSelectedFile().getAbsolutePath();
-            System.out.println("Selected album directory: " + selectedDirectoryPath);
-            // Implement further actions with the selected directory path here if needed.
-        } else {
-            System.out.println("No directory selected or operation cancelled.");
+            File directory = directoryChooser.getSelectedFile();
+            File[] files = directory.listFiles();
+            String albumImage = null;
+            List<Song> songs = new ArrayList<>();
+            for (File file : files) {
+                if (file.isFile()) {
+                    String fileName = file.getName();
+                    if (albumImage == null && fileName.endsWith(".jpg")) {
+                        albumImage = Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath()));
+                    } else if (fileName.endsWith(".mp3") || fileName.endsWith(".wav")) {
+                        String filePath = file.getAbsolutePath();
+                        if (fileName.endsWith(".mp3")) {
+                            String wavFilePath = filePath.substring(0, filePath.lastIndexOf(".")) + ".wav";
+                            AudioConverter.convertToWav(filePath, wavFilePath);
+                            filePath = wavFilePath;
+                        }
+                        AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(filePath));
+                        AudioFormat format = audioStream.getFormat();
+                        long frames = audioStream.getFrameLength();
+                        double durationInSeconds = (frames + 0.0) / format.getFrameRate();
+                        int durationInMilliSeconds = (int) (durationInSeconds * 1000);
+                        Song song = new Song(fileName, albumImage, filePath, Integer.toString(durationInMilliSeconds));
+                        songs.add(song);
+                    }
+                }
+            }
+            songs.forEach(library::addSong);
         }
-        frame.dispose(); // Clean up the frame after use.
+        frame.dispose();
     }
 
     public static void ViewLibrary() {
