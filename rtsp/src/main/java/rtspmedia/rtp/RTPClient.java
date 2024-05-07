@@ -145,18 +145,31 @@ public class RTPClient {
 
         playButton.addActionListener(e -> {
             if (isPlaying) {
-                stop();
+                stop(); // Stop the audio line and set isPlaying to false
                 playButton.setText("Play");
             } else {
+                playButton.setText("Pause");
+                isPlaying = true; // Set playing to true
                 try {
-                    sendConnectionRequest();
-                    playButton.setText("Pause");
+                    if (currentPlaybackTime == 0) {
+                        // First play or after the stream has ended
+                        sendConnectionRequest(); // Send connection request only on first play
+                    } else {
+                        // Resume playback if currently paused and not at the beginning
+                        line.start(); // Resume the audio line if it was paused
+                    }
+                    if (receiveThread == null || !receiveThread.isAlive()) {
+                        // Start receiving thread if not already running
+                        startReceiving();
+                    }
                 } catch (IOException ex) {
-                    System.out.println("Error sending connection request: " + ex.getMessage());
+                    System.out.println("Error resuming audio playback: " + ex.getMessage());
+                    isPlaying = false;
+                    playButton.setText("Play");
                 }
             }
-            isPlaying = !isPlaying;
         });
+        
 
         frame.getContentPane().add(playButton, BorderLayout.NORTH);
         frame.getContentPane().add(progressBar, BorderLayout.CENTER);
@@ -185,6 +198,10 @@ public class RTPClient {
     }
 
     private void sendConnectionRequest() throws IOException {
+        // Check if the socket exists and is not closed; otherwise, create a new one
+        if (socket == null || socket.isClosed()) {
+            socket = new DatagramSocket(); // Create a new socket
+        }
         byte[] message = "Hello, Server!".getBytes();
         DatagramPacket packet = new DatagramPacket(message, message.length, serverAddress, serverPort);
         socket.send(packet);
@@ -192,6 +209,20 @@ public class RTPClient {
             startReceiving();
         }
     }
+    
+    private void stop() {
+        isPlaying = false;
+        if (line != null) {
+            line.stop();
+            line.flush();
+            line.close();
+        }
+        if (socket != null && !socket.isClosed()) {
+            socket.close(); // Close the socket to interrupt the receiving thread
+        }
+        receiveThread = null; // Clear the receive thread
+    }
+    
 
     private void startReceiving() {
         receiveThread = new Thread(() -> {
@@ -224,14 +255,7 @@ public class RTPClient {
         progressBar.setValue(progress*2);
     }
 
-    private void stop() {
-        isPlaying = false;
-        line.stop();
-        line.flush();
-        if (receiveThread != null) {
-            receiveThread.interrupt();
-        }
-    }
+   
 
     public void setAlbumCover(String base64Image) {
         if (base64Image == null) {
