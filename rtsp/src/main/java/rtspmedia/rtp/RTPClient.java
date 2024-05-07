@@ -10,6 +10,11 @@ import java.util.Base64;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import javax.swing.*;
+
+import merrimackutil.json.JsonIO;
+import merrimackutil.json.types.JSONObject;
+import rtspmedia.Client.ClientConfiguration;
+
 import javax.sound.sampled.*;
 
 public class RTPClient {
@@ -25,6 +30,9 @@ public class RTPClient {
     private InetAddress serverAddress;
     private int serverPort = 25000;
     private long totalDuration = 300000; // Example total duration in milliseconds for a 5-minute audio
+    private static JSONObject configobj;
+    private static ClientConfiguration config;
+    private String configFile = "data/client-config/config.json";
 
     public long getTotalDuration() {
         return totalDuration;
@@ -37,8 +45,19 @@ public class RTPClient {
     private long currentPlaybackTime = 0; // Tracks the current playback time in milliseconds
 
     public RTPClient() throws LineUnavailableException, SocketException, UnknownHostException {
+        try {
+            configobj = JsonIO.readObject(new File(configFile));
+        } catch (FileNotFoundException x) {
+            System.out.println("Couldn't find config file!");
+        }
+        try {
+            config = new ClientConfiguration(configobj);
+        } catch (InvalidObjectException x) {
+            System.out.println("Invalid JSON Object");
+        }
+
         socket = new DatagramSocket();
-        serverAddress = InetAddress.getByName("localhost");
+        serverAddress = InetAddress.getByName(config.getServerAddress());
         initializeAudio();
         initializeGUI();
         setAlbumCover(null); // Set default album cover
@@ -46,6 +65,17 @@ public class RTPClient {
     }
 
     public RTPClient(int port ) throws LineUnavailableException, SocketException, UnknownHostException {
+        try {
+            configobj = JsonIO.readObject(new File(configFile));
+        } catch (FileNotFoundException x) {
+            System.out.println("Couldn't find config file!");
+        }
+        try {
+            config = new ClientConfiguration(configobj);
+        } catch (InvalidObjectException x) {
+            System.out.println("Invalid JSON Object");
+        }
+
         this.serverPort=port;
         socket = new DatagramSocket();
         serverAddress = InetAddress.getByName("localhost");
@@ -56,6 +86,17 @@ public class RTPClient {
     }
 
     public RTPClient(int port,long length ) throws LineUnavailableException, SocketException, UnknownHostException {
+        try {
+            configobj = JsonIO.readObject(new File(configFile));
+        } catch (FileNotFoundException x) {
+            System.out.println("Couldn't find config file!");
+        }
+        try {
+            config = new ClientConfiguration(configobj);
+        } catch (InvalidObjectException x) {
+            System.out.println("Invalid JSON Object");
+        }
+
         this.totalDuration=length;
         this.serverPort=port;
         socket = new DatagramSocket();
@@ -68,7 +109,17 @@ public class RTPClient {
 
 
     public RTPClient(int port,long length,String image,String title ) throws LineUnavailableException, SocketException, UnknownHostException {
-        // TODO: Implement Client Configuration here (syllabus asks for this)
+        try {
+            configobj = JsonIO.readObject(new File(configFile));
+        } catch (FileNotFoundException x) {
+            System.out.println("Couldn't find config file!");
+        }
+        try {
+            config = new ClientConfiguration(configobj);
+        } catch (InvalidObjectException x) {
+            System.out.println("Invalid JSON Object");
+        }
+
         this.albumCoverLabel=new JLabel();
         this.songTitleLabel = new JLabel();
         this.totalDuration=length;
