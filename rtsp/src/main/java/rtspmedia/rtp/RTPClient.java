@@ -28,7 +28,7 @@ public class RTPClient {
     private DatagramSocket socket;
     private Thread receiveThread;
     private InetAddress serverAddress;
-    private int serverPort = 25000;
+    private int serverPort;
     private long totalDuration = 300000; // Example total duration in milliseconds for a 5-minute audio
     private static JSONObject configobj;
     private static ClientConfiguration config;
@@ -58,6 +58,7 @@ public class RTPClient {
 
         socket = new DatagramSocket();
         serverAddress = InetAddress.getByName(config.getServerAddress());
+        serverPort = config.getServerPort();
         initializeAudio();
         initializeGUI();
         setAlbumCover(null); // Set default album cover
@@ -76,9 +77,9 @@ public class RTPClient {
             System.out.println("Invalid JSON Object");
         }
 
-        this.serverPort=port;
+        this.serverPort = config.getServerPort();
         socket = new DatagramSocket();
-        serverAddress = InetAddress.getByName("localhost");
+        serverAddress = InetAddress.getByName(config.getServerAddress());
         initializeAudio();
         initializeGUI();
         setAlbumCover(null); // Set default album cover
@@ -98,9 +99,9 @@ public class RTPClient {
         }
 
         this.totalDuration=length;
-        this.serverPort=port;
+        this.serverPort = config.getServerPort();
         socket = new DatagramSocket();
-        serverAddress = InetAddress.getByName("localhost");
+        serverAddress = InetAddress.getByName(config.getServerAddress());
         initializeAudio();
         initializeGUI();
         setAlbumCover(null); // Set default album cover
@@ -120,10 +121,10 @@ public class RTPClient {
             System.out.println("Invalid JSON Object");
         }
 
-        this.albumCoverLabel=new JLabel();
+        this.albumCoverLabel = new JLabel();
         this.songTitleLabel = new JLabel();
-        this.totalDuration=length;
-        this.serverPort=port;
+        this.totalDuration = length;
+        this.serverPort = config.getServerPort();
         this.setAlbumCover(image);
         this.setSongTitle(title);
 

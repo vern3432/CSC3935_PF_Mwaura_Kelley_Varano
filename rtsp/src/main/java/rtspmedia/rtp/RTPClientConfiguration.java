@@ -8,6 +8,7 @@ import merrimackutil.json.types.JSONType;
 
 public class RTPClientConfiguration implements JSONSerializable {
     private String serverAddress;
+    private int serverPort;
 
     public RTPClientConfiguration(JSONObject cdata) throws InvalidObjectException {
         deserialize(cdata);
@@ -25,8 +26,9 @@ public class RTPClientConfiguration implements JSONSerializable {
             serverAddress = config.getString("server-address");
         else
             throw new InvalidObjectException("Missing server-address field -- invalid configuration object.");
-
-        if (config.size() > 1)
+        if (config.containsKey("server-port"))
+            serverPort = config.getInt("server-port");
+        if (config.size() > 2)
             throw new InvalidObjectException("Superflous fields -- invalid configuration object.");
 
     }
@@ -38,11 +40,16 @@ public class RTPClientConfiguration implements JSONSerializable {
     public JSONType toJSONType() {
         JSONObject obj = new JSONObject();
         obj.put("server-address", serverAddress);
+        obj.put("server-port", serverPort);
         return obj;
     }
 
     public String getServerAddress() {
         return this.serverAddress;
+    }
+
+    public int getServerPort() {
+        return serverPort;
     }
 
     @Override
