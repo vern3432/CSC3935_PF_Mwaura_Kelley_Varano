@@ -1,7 +1,7 @@
 # Real Time Protocol (RTP) Audio Streaming and Audio Library Management Application
 ## CSC3935_PF_Mwaura_Kelley_Varano
 Final Project for CSC3935: Moses Mwaura, Aidan Varano, Sean Kelley
-
+Note:Project is Preloaded With Local Paths for the music library, no need to upload
 # Project Overview
 
 This project involves the development of a music library management system implemented in Java. The system allows users to interact with a command-line interface (CLI) to manage songs and albums, view library contents, and start a server for media streaming. The application supports adding songs with associated album images, which are compressed and stored in a Base64 encoded format to optimize storage.
@@ -71,32 +71,4 @@ All formats are described in the javadocs of each respective Configuration objec
 
 # Challenges and and Considerations, Future Enhancements, and Conclusions
 
-## Challenges
-
-Some challenges occured when handling the image files. Many of the images we attempted to store were stored at a very high resolution, so we compresswed them in a Base64 String format.
-
-When implementing the audio speed timing, songs were origionally played either in two seconds, at the speed the client received them, creating issues when compiling the audio data. This was solved by creating a buffer that would take in the information at a consistent speed.
-
-When implementing the WAV audio format, some issues arose. These were solved by implementing an in-memory converter that is automatically used on every media upload (whenever a song / album is added to the library).
-
-# Future Developments
-
-## Audio Streaming
-
-In future versions, video streaming could be implemented, allowing users to also stream video / music video versions of the music stored in the library.
-
-## GUI Improvements
-
-The GUI could be more usable and visually appealing. In future versions, this could be easily improved and made more user friendly.
-
-## Protocol Implementations
-
-Future versions could use RTCP, or other protocols to improve protocol usage and usability. This would make the application significantly more reliable. RTCP was attempted, but not fully implemented.
-
-## .mp3 Implementation
-
-True .mp3 implementation would make this application much more usable and widely accessible.
-
-## Library Storage Changes
-
-The library JSON for song and album storage could be made much more accessible based on what additions of albums are made to the library. In theory, each album should have songs associated to it, rather than songs with an album image.
+## Challenges and Considerations
