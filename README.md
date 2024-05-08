@@ -70,9 +70,12 @@ Each Server and Client and has it's own Configuration object, and json file asso
 All formats are described in the javadocs of each respective Configuration object.
 
 ## Client Gui ScreenShots:
-Player:
+### Player:
+
 ![image1](https://github.com/vern3432/CSC3935_PF_Mwaura_Kelley_Varano/assets/111017456/5422e018-ac62-4288-a08b-d9b8e59da62e)
-Library View
+
+###  Library View
+
 ![image2](https://github.com/vern3432/CSC3935_PF_Mwaura_Kelley_Varano/assets/111017456/11a809a1-1f82-49d2-8a83-c0dd7f5d5f69)
 
 
