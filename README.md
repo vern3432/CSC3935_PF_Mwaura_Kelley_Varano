@@ -73,8 +73,6 @@ All formats are described in the javadocs of each respective Configuration objec
 
 ## Challenges
 
-# Challenges
-
 Some challenges occured when handling the image files. Many of the images we attempted to store were stored at a very high resolution, so we compresswed them in a Base64 String format.
 
 When implementing the audio speed timing, songs were origionally played either in two seconds, at the speed the client received them, creating issues when compiling the audio data. This was solved by creating a buffer that would take in the information at a consistent speed.
