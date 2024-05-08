@@ -79,8 +79,24 @@ When implementing the audio speed timing, songs were origionally played either i
 
 When implementing the WAV audio format, some issues arose. These were solved by implementing an in-memory converter that is automatically used on every media upload (whenever a song / album is added to the library).
 
-## Future Developments
+# Future Developments
 
+## Audio Streaming
 
+In future versions, video streaming could be implemented, allowing users to also stream video / music video versions of the music stored in the library.
 
+## GUI Improvements
 
+The GUI could be more usable and visually appealing. In future versions, this could be easily improved and made more user friendly.
+
+## Protocol Implementations
+
+Future versions could use RTCP, or other protocols to improve protocol usage and usability. This would make the application significantly more reliable. RTCP was attempted, but not fully implemented.
+
+## .mp3 Implementation
+
+True .mp3 implementation would make this application much more usable and widely accessible.
+
+## Library Storage Changes
+
+The library JSON for song and album storage could be made much more accessible based on what additions of albums are made to the library. In theory, each album should have songs associated to it, rather than songs with an album image.
