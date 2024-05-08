@@ -1,7 +1,8 @@
 # Real Time Protocol (RTP) Audio Streaming and Audio Library Management Application
 ## CSC3935_PF_Mwaura_Kelley_Varano
 Final Project for CSC3935: Moses Mwaura, Aidan Varano, Sean Kelley
-Note:Project is Preloaded With Local Paths for the music library, no need to upload
+
+<u>Note:Project is Preloaded With Local Paths for the music library, no need to upload</u>
 # Project Overview
 
 This project involves the development of a music library management system implemented in Java. The system allows users to interact with a command-line interface (CLI) to manage songs and albums, view library contents, and start a server for media streaming. The application supports adding songs with associated album images, which are compressed and stored in a Base64 encoded format to optimize storage.
