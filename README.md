@@ -23,13 +23,6 @@ To use the application, follow these steps:
 
 - **Media Streaming**: A server component can be started from the CLI, enabling media streaming capabilities from a Client Connection using RTP
 
-## Technical Highlights
-
-- **Image Compression**: Images are resized and compressed before being converted to a Base64 string to reduce the storage requirement. This is handled during the song addition process as shown below:
-
-- **Server Initialization**: The server can be started via the CLI to facilitate media streaming, enhancing the application's utility for real-time media access.
-
-This project combines media management with streaming technology, providing a comprehensive solution for managing and accessing media content efficiently.
 
 # Application Usage
 
